@@ -1,6 +1,7 @@
 ![Icon](https://i.imgur.com/2pCx0WO.png)
 # Git With Me
 ![Unlicensed badge](https://img.shields.io/badge/U-nlicensed-green) ![Yandex Lyceum project badge](https://img.shields.io/badge/YL-project-red) ![For developers badge](https://img.shields.io/badge/For-Developers-white) ![Python badge](https://img.shields.io/badge/-Python-blue)
+
 *Thank you for choosing GitWithMe - the better way to code in a team using github. You don't need IDE anymore!*
 
 ## About GitWithMe
