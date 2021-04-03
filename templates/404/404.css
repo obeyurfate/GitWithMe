@@ -1,0 +1,16 @@
+body {
+    background-color: black;
+   }
+
+img.center { 
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0px;
+}
+
+button.home-button {
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
