@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>{{nickname}}</h3>
+<img src={{image}}>
+<table><thead><tr>
+    <td>Group id</td>
+    <td>Participants</td>
+</tr></thead>
+{% for group in groups %}
+<tr>
+    <td>group.id</td>
+    <td>group.participants</td>
+</tr>
+    {% endfor %}
+</table>
+{% endblock %}
