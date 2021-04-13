@@ -4,8 +4,7 @@ from .db_sess import SqlAlchemyBase
 
 
 class Files(SqlAlchemyBase, SerializerMixin):
-    __tablename__ = 'Files'
+    __tablename__ = 'files'
 
-    name = sqlalchemy.Column(sqlalchemy.Integer,
-                           primary_key=True, autoincrement=True)
+    name = sqlalchemy.Column(sqlalchemy.String, nullable=True, primary_key=True)
     path = sqlalchemy.Column(sqlalchemy.String, nullable=True)

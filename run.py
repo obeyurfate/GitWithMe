@@ -1,10 +1,13 @@
 from flask import Flask
 from flask import render_template
+from dotenv import load_dotenv
+import os
+
 from database import db_sess
 from database.groups import Groups
 
-
 app = Flask(__name__)
+load_dotenv('.env')
 
 
 @app.route('/profile')
@@ -15,12 +18,13 @@ def index():
     nickname = 'nickname'
     image = 'static/profile.png'
     groups = db_session.query(Groups)
-    return render_template('profile.html', **{'image': image,
-                                              'groups': groups,
-                                              'nickname': nickname,
-                                              })
+    context = {'image': image,
+               'groups': groups,
+               'nickname': nickname,
+               }
+    return render_template('profile.html', **context)
 
 
 if __name__ == '__main__':
-    db_sess.global_init("database/db.db")
+    db_sess.global_init(os.getenv("database"))
     app.run(port=8000, host='localhost')
