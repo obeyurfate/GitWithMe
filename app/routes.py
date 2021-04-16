@@ -10,8 +10,13 @@ from flask import redirect, render_template, send_file, request as flask_request
 from app import app
 
 
-@app.route('/profile')
+@app.route('/')
 def index():
+    return render_template('base.html')
+
+
+@app.route('/profile')
+def profile():
     current_sess = db_sess.create_session()
     '''image = image_url_from_github'''
     '''nickname = login_from_github'''
@@ -32,7 +37,8 @@ def redirect(page):
 
 @app.route('/favicon.ico')
 def favicon():
-    path = join_path('/', app.root_path, 'static')
+    path = join_path('/', app.root_path, 'static'
+                     ).replace('\\', '/')
     current_sess = db_sess.create_session()
     files = current_sess.query(Files).filter(Files.name == 'favicon')
     return send_file(path, files)

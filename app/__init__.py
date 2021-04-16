@@ -12,7 +12,6 @@ load_dotenv('.env')
 
 from app import routes
 
-print(getenv("database"))
 app.secret_key = urandom(24)
 db_sess.global_init(getenv("database"))
 app.run()
