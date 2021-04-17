@@ -37,14 +37,10 @@ def redirect(page):
 
 @app.route('/favicon.ico')
 def favicon():
-    path = join_path('/', app.root_path, 'static'
-                     ).replace('\\', '/')
-    current_sess = db_sess.create_session()
-    files = current_sess.query(Files).filter(Files.name == 'favicon').first()
-    return send_file(path + '/' + files.path)
+    return send_file('static/images/favicon.ico')
 
 
-@app.route('/find_groups')
+@ app.route('/find_groups')
 def group_finder():
     current_sess = db_sess.create_session()
     result = []
@@ -59,8 +55,6 @@ def group_finder():
     return render_template('group_finder.html', params=context)
 
 
-'''@app.errorhandler(Exception)
+@app.errorhandler(Exception)
 def handle_exception(error):
     return render_template('404.html', e=error), 404
-'''
-
