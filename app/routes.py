@@ -2,12 +2,12 @@
 from database.groups import Groups
 from database.users import User
 from database.files import Files
+from app import app
 from app.__init__ import db_sess
 
 from os.path import join as join_path
 
 from flask import redirect, render_template, send_file, request as flask_request
-from app import app
 
 
 @app.route('/')
@@ -21,8 +21,8 @@ def profile():
     '''image = image_url_from_github'''
     '''nickname = login_from_github'''
     nickname = 'nickname'
-    image = '../../static/profile.png'
-    groups = current_sess.query(Groups)
+    image = '../static/images/profile.png'
+    groups = current_sess.query(Groups).all()
     context = {'image': image,
                'groups': groups,
                'nickname': nickname,
@@ -40,8 +40,8 @@ def favicon():
     path = join_path('/', app.root_path, 'static'
                      ).replace('\\', '/')
     current_sess = db_sess.create_session()
-    files = current_sess.query(Files).filter(Files.name == 'favicon')
-    return send_file(path, files)
+    files = current_sess.query(Files).filter(Files.name == 'favicon').first()
+    return send_file(path + '/' + files.path)
 
 
 @app.route('/find_groups')
@@ -59,8 +59,8 @@ def group_finder():
     return render_template('group_finder.html', params=context)
 
 
-@app.errorhandler(Exception)
+'''@app.errorhandler(Exception)
 def handle_exception(error):
     return render_template('404.html', e=error), 404
-
+'''
 

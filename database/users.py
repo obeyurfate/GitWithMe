@@ -13,6 +13,6 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
                            primary_key=True, autoincrement=True)
     token = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     nickname = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    groups = orm.relation("Group",
+    groups = orm.relation("Groups",
                               secondary="groups_to_users",
                               backref="user")
