@@ -40,7 +40,7 @@ def favicon():
     return send_file('static/images/favicon.ico')
 
 
-@ app.route('/find_groups')
+@app.route('/find_groups')
 def group_finder():
     current_sess = db_sess.create_session()
     result = []
@@ -55,6 +55,18 @@ def group_finder():
     return render_template('group_finder.html', params=context)
 
 
+@app.route('/group/<name>')
+def group(name):
+    context = {'description': 'test description',
+               'link': '',
+               'users': ['admin0', 'admin1', 'tester', 'mrrm'],
+               'name': name,
+               }
+    return render_template('group.html', **context)
+
+
+'''
 @app.errorhandler(Exception)
 def handle_exception(error):
     return render_template('404.html', e=error), 404
+'''
