@@ -6,5 +6,5 @@ from .db_sess import SqlAlchemyBase
 class Files(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'files'
 
-    name = sqlalchemy.Column(sqlalchemy.String, nullable=True, primary_key=True)
-    path = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    name = sqlalchemy.Column(sqlalchemy.String, primary_key=True)
+    path = sqlalchemy.Column(sqlalchemy.String)

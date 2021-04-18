@@ -12,20 +12,24 @@ from flask import redirect, render_template, send_file, request as flask_request
 
 @app.route('/')
 def index():
-    return render_template('base.html')
+    return render_template('index.html')
 
 
 @app.route('/profile')
-def profile():
+@app.route('/profile/<nickname>')
+def profile(nickname=None):
     current_sess = db_sess.create_session()
-    '''image = image_url_from_github'''
-    '''nickname = login_from_github'''
-    nickname = 'nickname'
+    if not nickname:
+        '''nickname = login_from_github'''
+        nickname = 'obeyurfate'
+    print(nickname)
     image = '../static/images/profile.png'
-    groups = current_sess.query(Groups).all()
+    user = current_sess.query(User).filter(User.nickname == nickname).first()
+    print(user.groups)
     context = {'image': image,
-               'groups': groups,
+               'groups': user.groups,
                'nickname': nickname,
+               'description': user.description
                }
     return render_template('profile.html', **context)
 
@@ -44,23 +48,27 @@ def favicon():
     return send_file(path + '/' + files.path)
 
 
-@app.route('/find_groups')
+@app.route('/find_user')
 def group_finder():
     current_sess = db_sess.create_session()
     result = []
     search_text = flask_request.args.get("search", default='')
     if search_text != '':
-        result = current_sess.query(Groups).filter(Groups.id == id)
-        result = [[group.id, group.description] for group in result]
+        result = current_sess.query(User).filter(User.nickname == search_text)
+        result = [[user.nickname, user.description] for user in result]
     context = {
         'search_text': search_text,
         'result': result
     }
-    return render_template('group_finder.html', params=context)
+    return render_template('user_finder.html', params=context)
+
+
+@app.route('/ide')
+def ide():
+    return render_template('ide.html')
 
 
 '''@app.errorhandler(Exception)
 def handle_exception(error):
-    return render_template('404.html', e=error), 404
-'''
+    return render_template('404.html', e=error), 404'''
 

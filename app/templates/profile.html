@@ -1,16 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
+<head><link rel="stylesheet" type="text/css" href="../static/styles/profile.css"></head>
+<div class="row; nickname">
+    <div class="col col-md-auto">
 <h3>{{nickname}}</h3>
+</div>
+    </div>
+<div class="row">
+    <div class="col col-md-auto">
 <img src="{{image}}">
+    </div>
+        <div class="col col-lg-2; description">
+            <h4>Description</h4>
+            {{description[:30]}}</div>
+    </div>
+<div class="row justify-content-md-center">
+    <div class="col col-lg">
 <table><thead><tr>
-    <td>Group id</td>
+    <td>Group name</td>
     <td>Participants</td>
 </tr></thead>
 {% for group in groups %}
 <tr>
-    <td>group.id</td>
-    <td>group.user</td>
+    <td>{{group.name}}</td>
+    <td>{% for user in group.user %}
+        <a href="http://127.0.0.1:5000/profile/{{user.nickname}}">{{user.nickname}}</a></td>
+    {% endfor %}
 </tr>
     {% endfor %}
-</table>
+</table></div>
+</div>
 {% endblock %}
