@@ -68,7 +68,7 @@ def ide():
     return render_template('ide.html')
 
 
-'''@app.errorhandler(Exception)
+@app.errorhandler(Exception)
 def handle_exception(error):
-    return render_template('404.html', e=error), 404'''
+    return render_template('404.html', e=error), 404
 
