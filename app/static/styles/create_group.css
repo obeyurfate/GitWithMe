@@ -1,0 +1,22 @@
+body {
+    background-color: black;
+    color: white;
+    margin-top: 20px;
+}
+
+.widget {
+	width: 50%;
+	margin: 0 auto;
+}
+
+.button {
+	color: black;
+	background-color: white;
+	margin: 0 auto;
+	width: 100%;
+}
+
+h1 {
+	text-align: center;
+	margin-bottom: 30px;
+}

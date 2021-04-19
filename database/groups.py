@@ -1,7 +1,7 @@
 import sqlalchemy
 from sqlalchemy_serializer import SerializerMixin
-from .db_sess import SqlAlchemyBase
 
+from .db_sess import SqlAlchemyBase
 
 association_table = sqlalchemy.Table(
     'groups_to_users',
@@ -18,5 +18,9 @@ class Groups(SqlAlchemyBase, SerializerMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
+    name = sqlalchemy.Column(sqlalchemy.String)
+    users = sqlalchemy.Column(sqlalchemy.String)
     description = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     github = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    icon = sqlalchemy.Column(sqlalchemy.String)
+
