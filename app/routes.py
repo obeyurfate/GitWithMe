@@ -27,7 +27,7 @@ def login():
 
 @app.route('/profile')
 @app.route('/profile/<nickname>')
-def profile(nickname):
+def profile(nickname=None):
     current_sess = db_sess.create_session()
     if not nickname:
         '''nickname = login_from_github'''
@@ -41,7 +41,6 @@ def profile(nickname):
     '''
     image = '../static/images/profile.png'
     user = current_sess.query(User).filter(User.nickname == nickname).first()
-    print(user.groups)
     context = {'image': image,
                'groups': user.groups,
                'nickname': nickname,
@@ -53,23 +52,22 @@ def profile(nickname):
 @app.route('/group/<name>')
 def group(name):
     current_sess = db_sess.create_session()
-    group = [group for group in current_sess.query(Groups).all()
-             if name == group.name][0]
+    group = current_sess.query(Groups).filter(name == Groups.name).first()
     result = {
         'name': group.name,
         'description': group.description,
-        'users': group.users.split(','),
+        'users': group.user,
         'link': group.github,
         'icon': group.icon
     }
     for key in result:
         if result[key] is None:
             result[key] = ''
-    context = {'description': result[1],
-               'link': result[-2],
-               'users': result[-3],
-               'name': result[0],
-               'icon': result[-1]
+    context = {'description': result['description'],
+               'link': result['link'],
+               'users': result['users'],
+               'name': result['name'],
+               'icon': result['icon']
                }
     return render_template('group.html', **context)
 
@@ -112,7 +110,6 @@ def create_group():
 def handle_exception(error):
     # Handle all exceptions
     return render_template('404.html', e=error), 404
-
 
 @app.route('/find_groups')
 def group_finder():

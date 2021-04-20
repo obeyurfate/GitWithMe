@@ -1,10 +1,9 @@
-table{
-    border: 2px #ffff;
-    border-radius: 5px;
-}
 a {
     color: #ffff;
 }
 a:hover {
 	text-decoration:none;
+}
+td {
+width: 120px;
 }
