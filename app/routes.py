@@ -22,12 +22,16 @@ def login():
     authorization_url, state = github.authorization_url(
         authorization_base_url)
     session['oauth_state'] = state
+    authorization_url = authorization_url.replace(
+        'https://github.com/login/oauth/', 'http://127.0.0.1:5000/')
     return redirect(authorization_url)
 
 
-@app.route('/profile')
+@app.route('/profile', defaults={'nickname': None})
 @app.route('/profile/<nickname>')
-def profile(nickname=None):
+def profile(nickname):
+    if 'state' not in session:
+        return redirect('/login')
     current_sess = db_sess.create_session()
     if not nickname:
         '''nickname = login_from_github'''
@@ -111,6 +115,7 @@ def handle_exception(error):
     # Handle all exceptions
     return render_template('404.html', e=error), 404
 
+
 @app.route('/find_groups')
 def group_finder():
     result = []
@@ -129,11 +134,12 @@ def group_finder():
 
 @app.route('/callback')
 def get_callback():
+    environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     github = OAuth2Session(client_id, state=session['oauth_state'])
     token = github.fetch_token(token_url, client_secret=client_secret,
                                authorization_response=request.url)
     session['oauth_token'] = token
-    return redirect(url_for('.profile'))
+    return redirect('/profile')
 
 
 @app.route('/ide', methods=['GET', 'POST'])
