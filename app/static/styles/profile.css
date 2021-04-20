@@ -5,3 +5,6 @@ table{
 a {
     color: #ffff;
 }
+a:hover {
+	text-decoration:none;
+}

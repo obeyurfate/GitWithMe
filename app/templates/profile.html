@@ -19,6 +19,7 @@
 <table><thead><tr>
     <td>Group name</td>
     <td>Participants</td>
+    <td>Description</td>
 </tr></thead>
 {% for group in groups %}
 <tr>
@@ -26,6 +27,7 @@
     <td>{% for user in group.user %}
         <a href="http://127.0.0.1:5000/profile/{{user.nickname}}">{{user.nickname}}</a></td>
     {% endfor %}
+    <td>{{group.description[:30]}}</td>
 </tr>
     {% endfor %}
 </table></div>

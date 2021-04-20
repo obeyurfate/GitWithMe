@@ -19,8 +19,15 @@
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search for a group</button>
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="Search_text">
+      <button class="btn btn-outline-success my-2 my-sm-0" onclick="redirect();">
+        Search for a group</button>
     </form>
   </div>
+  <script>
+function redirect(){
+var joined = "http://127.0.0.1:5000/find_user?search=" + document.getElementById("Search_text").value;
+window.location.href = joined;
+};
+</script>
 </nav>

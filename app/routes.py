@@ -47,17 +47,21 @@ def favicon():
 
 @app.route('/find_user')
 def group_finder():
-    current_sess = db_sess.create_session()
-    result = []
-    search_text = flask_request.args.get("search", default='')
-    if search_text != '':
-        result = current_sess.query(User).filter(User.nickname == search_text)
-        result = [[user.nickname, user.description] for user in result]
-    context = {
-        'search_text': search_text,
-        'result': result
-    }
-    return render_template('user_finder.html', params=context)
+    try:
+        current_sess = db_sess.create_session()
+        search_text = flask_request.args.get("search", default='')
+        if search_text != '':
+            users = current_sess.query(User).filter(User.nickname == search_text)
+            users = [[user.nickname, user.description] for user in users]
+            groups = current_sess.query(Groups).filter(Groups.name == search_text).all()
+            return render_template('user_finder.html', users=users, search_text=search_text,
+                                   groups=groups)
+        else:
+            return render_template('user_finder.html', search_text=search_text)
+    except Exception as e:
+        print(e)
+
+
 
 
 @app.route('/ide', methods=['GET', 'POST'])
@@ -73,10 +77,9 @@ def ide():
                 'result': global_scope
             }
             return render_template('ide.html', context=context)
-    else:
+    elif request.method == 'POST':
         code = "print('hello world')"
         return render_template('ide.html', code=code, result="")
-
 
 @app.errorhandler(Exception)
 def handle_exception(error):
