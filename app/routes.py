@@ -7,7 +7,8 @@ from app.__init__ import db_sess
 
 from os.path import join as join_path
 
-from flask import redirect, render_template, send_file, request as flask_request
+from flask import redirect, render_template, send_file, request as flask_request, request
+import runpy
 
 
 @app.route('/')
@@ -63,12 +64,25 @@ def group_finder():
     return render_template('user_finder.html', params=context)
 
 
-@app.route('/ide')
+@app.route('/ide', methods=['GET', 'POST'])
 def ide():
-    return render_template('ide.html')
+    if request.method == 'POST':
+            print(request.form)
+            with open('TEMP.py', 'w') as temp_file:
+                temp_file.write(request.form['code'])
+            script_path = 'TEMP.py'
+            global_scope = runpy.run_path(script_path, run_name='__main__')
+            context = {
+                'code': request.form['code'],
+                'result': global_scope
+            }
+            return render_template('ide.html', context=context)
+    else:
+        code = "print('hello world')"
+        return render_template('ide.html', code=code, result="")
 
 
-@app.errorhandler(Exception)
+'''@app.errorhandler(Exception)
 def handle_exception(error):
     return render_template('404.html', e=error), 404
-
+'''
