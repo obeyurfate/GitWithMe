@@ -49,6 +49,7 @@ def profile(nickname):
                }
     return render_template('profile.html', **context)
 
+
 @app.route('/group/<name>')
 def group(name):
     current_sess = db_sess.create_session()
@@ -73,7 +74,6 @@ def group(name):
     return render_template('group.html', **context)
 
 
-
 @app.route('/favicon.ico')
 def favicon():
     # Returning favicon
@@ -81,18 +81,15 @@ def favicon():
 
 
 @app.route('/find_user')
-def group_finder():
-    try:
-        current_sess = db_sess.create_session()
-        search_text = flask_request.args.get("search", default='')
-        if search_text != '':
-            users = current_sess.query(User).filter(User.nickname == search_text)
-            users = [[user.nickname, user.description] for user in users]
-            return render_template('user_finder.html', users=users, search_text=search_text)
-        else:
-            return render_template('user_finder.html', search_text=search_text)
-    except Exception as e:
-        print(e)
+def user_finder():
+    current_sess = db_sess.create_session()
+    search_text = flask_request.args.get("search", default='')
+    if search_text != '':
+        users = current_sess.query(User).filter(User.nickname == search_text)
+        users = [[user.nickname, user.description] for user in users]
+        return render_template('user_finder.html', users=users, search_text=search_text)
+    else:
+        return render_template('user_finder.html', search_text=search_text)
 
 
 @app.route('/create_group', methods=['POST', 'GET'])
@@ -145,17 +142,16 @@ def get_callback():
 @app.route('/ide', methods=['GET', 'POST'])
 def ide():
     if request.method == 'POST':
-            print(request.form)
-            with open('TEMP.py', 'w') as temp_file:
-                temp_file.write(request.form['code'])
-            script_path = 'TEMP.py'
-            global_scope = runpy.run_path(script_path, run_name='__main__')
-            context = {
-                'code': request.form['code'],
-                'result': global_scope
-            }
-            return render_template('ide.html', context=context)
-    elif request.method == 'POST':
+        print(request.form)
+        with open('TEMP.py', 'w') as temp_file:
+            temp_file.write(request.form['code'])
+        script_path = 'TEMP.py'
+        global_scope = runpy.run_path(script_path, run_name='__main__')
+        context = {
+            'code': request.form['code'],
+            'result': global_scope
+        }
+        return render_template('ide.html', context=context)
+    elif request.method == 'GET':
         code = "print('hello world')"
         return render_template('ide.html', code=code, result="")
-

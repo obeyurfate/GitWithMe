@@ -1,0 +1,34 @@
+body {
+    background-color: black;
+   }
+
+a {
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration:none;
+}
+
+.finder_searchbox {
+	margin-top: 13px;
+}
+
+.finder_widget {
+	margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    text-align: center;
+}
+
+.icons {
+	color: white;
+	background-color: black;
+	margin-top: 9px;
+    text-align: center;
+}
+
+.group {
+	margin: 0 auto;
+	width: 90%;
+}
