@@ -1,0 +1,38 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr 1fr 1fr;
+  grid-template-rows: 0.7fr 1.3fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "Icon Name Name Name"
+    "Users Tree Tree Tree"
+    "Info Tree Tree Tree";
+}
+
+.Icon { grid-area: Icon; }
+.Name { grid-area: Name; }
+.Info { 
+  grid-area: Info;
+  margin-top: 15px;
+}
+.Tree  { 
+  grid-area: Tree;
+  margin-top: 15px;
+}
+.Users {
+  display: flex;
+  margin-top: 30px;
+  margin-right: 15px;
+  width: 220px;
+  grid-area: Users;
+  color: black;
+}
+
+body {
+  margin-top: 15px;
+  margin-right: 15px;
+  margin-left: 15px;
+  background-color: black;
+  color: white;
+   }
+
