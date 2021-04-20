@@ -42,11 +42,7 @@ def redirect(page):
 
 @app.route('/favicon.ico')
 def favicon():
-    path = join_path('/', app.root_path, 'static'
-                     ).replace('\\', '/')
-    current_sess = db_sess.create_session()
-    files = current_sess.query(Files).filter(Files.name == 'favicon').first()
-    return send_file(path + '/' + files.path)
+    return send_file('static/images/favicon.ico')
 
 
 @app.route('/find_user')
@@ -82,7 +78,8 @@ def ide():
         return render_template('ide.html', code=code, result="")
 
 
-'''@app.errorhandler(Exception)
+@app.errorhandler(Exception)
 def handle_exception(error):
     return render_template('404.html', e=error), 404
-'''
+
+
