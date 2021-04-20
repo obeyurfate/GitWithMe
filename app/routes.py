@@ -5,9 +5,11 @@ from database.groups import Groups
 from app import *
 
 from flask import redirect, render_template, send_file, request as flask_request, request
-from flask import url_for, session
+from flask import url_for, session, jsonify
 from requests_oauthlib import OAuth2Session
 import runpy
+
+from requests import get
 
 
 @app.route('/')
@@ -22,8 +24,6 @@ def login():
     authorization_url, state = github.authorization_url(
         authorization_base_url)
     session['oauth_state'] = state
-    authorization_url = authorization_url.replace(
-        'https://github.com/login/oauth/', 'http://127.0.0.1:5000/')
     return redirect(authorization_url)
 
 
@@ -137,24 +137,31 @@ def group_finder():
 @app.route('/callback')
 def get_callback():
     environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-    github = OAuth2Session(client_id, state=session['oauth_state'])
-    token = github.fetch_token(token_url, client_secret=client_secret,
-                               authorization_response=request.url)
+    github = OAuth2Session(client_id, state=session['state'])
+    print('!!!', github.get('https://api.github.com/user').json())
+    token = get('https://github.com/login/oauth/access_token',
+                params={
+                    'client_id': client_id,
+                    'client_secret': client_secret,
+                    'code': session['code']
+                }).json()
+    print('!!!', token)
     session['oauth_token'] = token
     return redirect('/profile')
 
 
-@app.route('/authorize')
+@app.route('/auth')
 def authorize():
     state = flask_request.args.get('state', default='')
-    session['oauth_state'] = state
+    code = flask_request.args.get('code', default='')
+    session['code'] = code
+    session['state'] = state
     return redirect('/callback')
 
 
 @app.route('/ide', methods=['GET', 'POST'])
 def ide():
     if request.method == 'POST':
-        print(request.form)
         with open('TEMP.py', 'w') as temp_file:
             temp_file.write(request.form['code'])
         script_path = 'TEMP.py'

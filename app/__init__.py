@@ -14,8 +14,9 @@ client_id = environ.get('client_id')
 client_secret = environ.get('client_secret')
 authorization_base_url = 'https://github.com/login/oauth/authorize'
 token_url = 'https://github.com/login/oauth/access_token'
+app.secret_key = 'gwmsecret'
 
 from app import routes
 
-app.secret_key = urandom(24)
+#app.secret_key = urandom(24)
 db_sess.global_init(getenv("database"))
