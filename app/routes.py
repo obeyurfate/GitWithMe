@@ -88,9 +88,7 @@ def group_finder():
         if search_text != '':
             users = current_sess.query(User).filter(User.nickname == search_text)
             users = [[user.nickname, user.description] for user in users]
-            groups = current_sess.query(Groups).filter(Groups.name == search_text).all()
-            return render_template('user_finder.html', users=users, search_text=search_text,
-                                   groups=groups)
+            return render_template('user_finder.html', users=users, search_text=search_text)
         else:
             return render_template('user_finder.html', search_text=search_text)
     except Exception as e:
