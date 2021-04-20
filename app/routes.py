@@ -1,21 +1,13 @@
 # -*- coding: utf-8 -*-
-from database.groups import Groups
+
 from database.users import User
-from database.files import Files
-from app import app
-from app.__init__ import db_sess
 from database.groups import Groups
-
-from flask import redirect, render_template
-from flask import request as flask_request
-from flask import send_file, url_for, session
-
-from requests_oauthlib import OAuth2Session
-
 from app import *
-from os.path import join as join_path
 
-from flask import redirect, render_template, send_file, request as flask_request
+from flask import redirect, render_template, send_file, request as flask_request, request
+from flask import url_for, session
+from requests_oauthlib import OAuth2Session
+import runpy
 
 
 @app.route('/')
@@ -35,9 +27,8 @@ def login():
 
 @app.route('/profile')
 @app.route('/profile/<nickname>')
-def profile():
+def profile(nickname):
     current_sess = db_sess.create_session()
-    groups = current_sess.query(Groups).all()
     if not nickname:
         '''nickname = login_from_github'''
         nickname = 'obeyurfate'
@@ -56,11 +47,7 @@ def profile():
                'nickname': nickname,
                'description': user.description
                }
-    return render_template('profile.html', **context
-
-@app.route('/redirect/<page>', methods=['POST', 'GET'])
-def redirect(page):
-    return redirect(page)
+    return render_template('profile.html', **context)
 
 @app.route('/group/<name>')
 def group(name):
@@ -117,7 +104,9 @@ def create_group():
         name = flask_request.form['name']
         icon = flask_request.form['icon']
         description = flask_request.form['description']
-        group = Groups(name=name, description=description, icon=icon)
+        group = Groups(name=name,
+                       description=description,
+                       icon=icon)
         current_sess.add(group)
         current_sess.commit()
         return redirect('/group/' + name)
