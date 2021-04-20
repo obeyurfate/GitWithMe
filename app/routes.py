@@ -110,10 +110,12 @@ def create_group():
     return render_template('create_group.html')
 
 
+"""
 @app.errorhandler(Exception)
 def handle_exception(error):
     # Handle all exceptions
     return render_template('404.html', e=error), 404
+"""
 
 
 @app.route('/find_groups')
@@ -140,6 +142,13 @@ def get_callback():
                                authorization_response=request.url)
     session['oauth_token'] = token
     return redirect('/profile')
+
+
+@app.route('/authorize')
+def authorize():
+    state = flask_request.args.get('state', default='')
+    session['oauth_state'] = state
+    return redirect('/callback')
 
 
 @app.route('/ide', methods=['GET', 'POST'])
