@@ -1,0 +1,64 @@
+
+
+.ace_editor {
+		border: 1px solid lightgray;
+		margin: auto;
+		height: 500px;
+		width: 100%;
+}
+.scrollmargin {
+		height: 80px;
+        text-align: center;
+}
+	.dialog-save h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.dialog-save .tingle-modal-box__content {
+  padding: 2rem;
+}
+
+.dialog-save .tingle-modal-box__footer {
+  padding: 1rem;
+}
+
+.dialog-save .tingle-btn {
+  padding: 0.667rem;
+}
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+#page-content-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: row;
+  height: 2em;
+  padding: 0 0.25em;
+}
+
+.toolbar button,
+.toolbar select {
+  display: inline-block;
+  height: 1.67em;
+  margin-right: 0.5em;
+  align-self: center;
+}
+textarea{
+    margin-top: 10px;
+    background-color: black;
+    width: 100%;
+    color: white;
+    height: 100px;
+}
+button {
+height: 40px;
+}
