@@ -4,10 +4,13 @@ from database.users import User
 from database.groups import Groups
 from app import *
 
+from contextlib import redirect_stdout
 from flask import redirect, render_template, send_file, request as flask_request, request
 from flask import url_for, session
+import io
 from requests_oauthlib import OAuth2Session
 import runpy
+
 
 
 @app.route('/')
@@ -106,11 +109,11 @@ def create_group():
     return render_template('create_group.html')
 
 
-@app.errorhandler(Exception)
+'''@app.errorhandler(Exception)
 def handle_exception(error):
     # Handle all exceptions
     return render_template('404.html', e=error), 404
-
+'''
 @app.route('/find_groups')
 def group_finder():
     result = []
@@ -139,16 +142,21 @@ def get_callback():
 @app.route('/ide', methods=['GET', 'POST'])
 def ide():
     if request.method == 'POST':
-        print(request.form)
-        with open('TEMP.py', 'w') as temp_file:
-            temp_file.write(request.form['code'])
-        script_path = 'TEMP.py'
-        global_scope = runpy.run_path(script_path, run_name='__main__')
+        code = '\n'.join(request.form['code'].split('<br/>'))
+        code = code.rstrip('\n')
+        with open('TEMP.py', 'w', encoding='utf-8') as temp_file:
+            temp_file.write(code)
+        f = io.StringIO()
+        with redirect_stdout(f):
+            runpy.run_path('TEMP.py')
+        s = f.getvalue()
+        result = s
         context = {
-            'code': request.form['code'],
-            'result': global_scope
+            'code': code,
+            'result': result
         }
-        return render_template('ide.html', context=context)
+        return render_template('ide.html', **context)
     elif request.method == 'GET':
-        code = "print('hello world')"
+        with open('TEMP.py', 'r', encoding='utf-8') as f:
+            code = f.read()
         return render_template('ide.html', code=code, result="")

@@ -18,4 +18,4 @@ token_url = 'https://github.com/login/oauth/access_token'
 from app import routes
 
 app.secret_key = urandom(24)
-db_sess.global_init(getenv("database"))
+db_sess.global_init('database/db.db')

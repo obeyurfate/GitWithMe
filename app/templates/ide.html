@@ -17,16 +17,14 @@
     </div>
     <pre id="editor">{{code}}</pre>
 </div>
-<form method="post">
-        <input hidden="hidden" id="code" type="text">
-        <button type="submit" class="btn btn-outline-success btn-lg">Run</button>
-    </form>
-<div><textarea readonly>output>{{result}}</textarea></div>
+<form method="post" name="codeform">
+    <input hidden="hidden" name="code" id="code">
+</form>
+<button onclick="submit()">Run</button>
+    <div><textarea readonly>output>{{result}}</textarea></div>
 
-<script src="../static/js/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    const MODES = getModes();
-
+const MODES = getModes();
 ace.config.set('basePath', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11');
 
 $('select[name="sel-mode"]').append(MODES.map(mode => new Option(mode.text, mode.value)));
@@ -36,10 +34,15 @@ const editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.getSession().setMode(`ace/mode/${defaultMode}`);
 editor.setShowPrintMargin(false);
-editor.on('change', function() {
-document.getElementById('code').value = editor.getValue();
-});
-$('select[name="sel-mode"]').on('change', function(e) {
+function submit() {
+let form = document.forms.codeform;
+    for (let i = 0; i < editor.session.getLength(); i++) {
+        form.elements.code.value += editor.session.getLine(i) + "<br/>";
+};
+    alert(form.elements.code.value);
+    form.submit();
+};
+  $('select[name="sel-mode"]').on('change', function(e) {
   editor.getSession().setMode("ace/mode/" + e.target.value);
 }).val(defaultMode);
 function getModes() {
@@ -48,5 +51,6 @@ function getModes() {
     "value": "python",
     "extension": "py"
   }];
-}</script>
+}
+</script>
 {% endblock %}
