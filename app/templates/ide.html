@@ -19,8 +19,10 @@
 </div>
 <form method="post" name="codeform">
     <input hidden="hidden" name="code" id="code">
+    <input name="save" hidden="hidden" id="save">
 </form>
 <button onclick="submit()">Run</button>
+<button onclick="save()">Save</button>
     <div><textarea readonly>output>{{result}}</textarea></div>
 
 <script>
@@ -29,19 +31,28 @@ ace.config.set('basePath', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11');
 
 $('select[name="sel-mode"]').append(MODES.map(mode => new Option(mode.text, mode.value)));
 
+window.onbeforeunload = function() {
+    return "Save your file before leaving"
+};
 const defaultMode = 'python';
 const editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.getSession().setMode(`ace/mode/${defaultMode}`);
 editor.setShowPrintMargin(false);
 function submit() {
+ window.onbeforeunload = null;
 let form = document.forms.codeform;
     for (let i = 0; i < editor.session.getLength(); i++) {
         form.elements.code.value += editor.session.getLine(i) + "<br/>";
 };
-    alert(form.elements.code.value);
     form.submit();
 };
+function save() {
+    window.onbeforeunload = null;
+    let form = document.forms.codeform;
+    form.elements.save.value = "true";
+    submit();
+}
   $('select[name="sel-mode"]').on('change', function(e) {
   editor.getSession().setMode("ace/mode/" + e.target.value);
 }).val(defaultMode);

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from database.temps import Temps
 from database.users import User
 from database.groups import Groups
 from app import *
@@ -10,7 +10,6 @@ from flask import url_for, session
 import io
 from requests_oauthlib import OAuth2Session
 import runpy
-
 
 
 @app.route('/')
@@ -109,11 +108,11 @@ def create_group():
     return render_template('create_group.html')
 
 
-@app.errorhandler(Exception)
+'''@app.errorhandler(Exception)
 def handle_exception(error):
     # Handle all exceptions
     return render_template('404.html', e=error), 404
-
+'''
 @app.route('/find_groups')
 def group_finder():
     result = []
@@ -141,22 +140,41 @@ def get_callback():
 
 @app.route('/ide', methods=['GET', 'POST'])
 def ide():
+    current_sess = db_sess.create_session()
+    nickname = 'obeyurfate'
+    user = current_sess.query(User).filter(User.nickname == nickname).first()
     if request.method == 'POST':
         code = '\n'.join(request.form['code'].split('<br/>'))
         code = code.rstrip('\n')
-        with open('TEMP.py', 'w', encoding='utf-8') as temp_file:
-            temp_file.write(code)
-        f = io.StringIO()
-        with redirect_stdout(f):
-            runpy.run_path('TEMP.py')
-        s = f.getvalue()
-        result = s
-        context = {
-            'code': code,
-            'result': result
-        }
-        return render_template('ide.html', **context)
+        if not request.form['save']:
+            with open('TEMP.py', 'w', encoding='utf-8') as temp_file:
+                temp_file.write(code)
+            f = io.StringIO()
+            with redirect_stdout(f):
+                runpy.run_path('TEMP.py')
+            s = f.getvalue()
+            result = s
+            context = {
+                'code': code,
+                'result': result
+            }
+            return render_template('ide.html', **context)
+        else:
+            id = user.id
+            temp_f = current_sess.query(Temps).filter(Temps.user_id == id).first()
+            if temp_f:
+                temp_f.code = code
+                current_sess.merge(temp_f)
+                current_sess.commit()
+            else:
+                temp_f = Temps(code=code, user_id=id)
+                current_sess.add(temp_f)
+                current_sess.commit()
+            return render_template('ide.html', code=code)
+
     elif request.method == 'GET':
-        with open('TEMP.py', 'r', encoding='utf-8') as f:
-            code = f.read()
+        code = ''
+        temp_f = current_sess.query(Temps).filter(Temps.user_id == user.id).first()
+        if temp_f:
+            code = temp_f.code
         return render_template('ide.html', code=code, result="")
