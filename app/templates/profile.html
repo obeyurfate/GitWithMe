@@ -24,7 +24,7 @@
 </tr></thead>
 {% for group in groups %}
 <tr>
-    <td>{{group.name}}</td>
+    <td><a href="/group/{{group.name}}">{{group.name}}</a></td>
     <td>{% for user in group.user %}
 	    	<!-- Link to user -->
 	   		<a href="{{ '/profile/' + user.nickname}}" >

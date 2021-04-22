@@ -108,11 +108,12 @@ def create_group():
     return render_template('create_group.html')
 
 
-'''@app.errorhandler(Exception)
+@app.errorhandler(Exception)
 def handle_exception(error):
     # Handle all exceptions
     return render_template('404.html', e=error), 404
-'''
+
+
 @app.route('/find_groups')
 def group_finder():
     result = []
@@ -147,21 +148,32 @@ def ide():
         code = '\n'.join(request.form['code'].split('<br/>'))
         code = code.rstrip('\n')
         if not request.form['save']:
-            with open('TEMP.py', 'w', encoding='utf-8') as temp_file:
-                temp_file.write(code)
-            f = io.StringIO()
-            with redirect_stdout(f):
-                runpy.run_path('TEMP.py')
-            s = f.getvalue()
-            result = s
-            context = {
-                'code': code,
-                'result': result
-            }
-            return render_template('ide.html', **context)
+            try:
+                with open('TEMP.py', 'w', encoding='utf-8') as temp_file:
+                    temp_file.write(code)
+                temp_f = current_sess.query(Temps).filter(Temps.user_id == user.id).first()
+                temp_f.code = code
+                f = io.StringIO()
+                with redirect_stdout(f):
+                    runpy.run_path('TEMP.py')
+                s = f.getvalue()
+                result = s
+                context = {
+                    'code': code,
+                    'result': result
+                }
+                return render_template('ide.html', **context)
+            except Exception as e:
+                result = e
+                context = {
+                    'code': code,
+                    'result': result
+                }
+                return render_template('ide.html', **context)
         else:
             id = user.id
             temp_f = current_sess.query(Temps).filter(Temps.user_id == id).first()
+            print(temp_f)
             if temp_f:
                 temp_f.code = code
                 current_sess.merge(temp_f)
