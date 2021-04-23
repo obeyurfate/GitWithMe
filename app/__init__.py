@@ -5,10 +5,13 @@ from os import getenv, urandom, environ
 from database import db_sess
 from dotenv import load_dotenv
 from flask import Flask
+from flask_login import LoginManager, login_user
 
 
 app = Flask(__name__, template_folder='./templates')
 load_dotenv('.env')
+login_manager = LoginManager(app)
+login_manager.init_app(app)
 
 client_id = environ.get('client_id')
 client_secret = environ.get('client_secret')

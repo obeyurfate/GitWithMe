@@ -7,6 +7,7 @@ from app import *
 from contextlib import redirect_stdout
 from flask import redirect, render_template, send_file, request as flask_request, request
 from flask import url_for, session
+from flask_login import login_required
 import io
 from requests_oauthlib import OAuth2Session
 import runpy
@@ -29,6 +30,7 @@ def login():
 
 @app.route('/profile')
 @app.route('/profile/<nickname>')
+@login_manager.user_loader
 def profile(nickname=None):
     current_sess = db_sess.create_session()
     if not nickname:
@@ -93,6 +95,7 @@ def user_finder():
 
 
 @app.route('/create_group', methods=['POST', 'GET'])
+@login_required
 def create_group():
     if flask_request.method == 'POST':
         current_sess = db_sess.create_session()
