@@ -34,14 +34,13 @@ def profile(nickname=None):
     if not nickname:
         '''nickname = login_from_github'''
         nickname = 'obeyurfate'
-    '''
     github = OAuth2Session(client_id, token=session['oauth_token'])
-    return jsonify(github.get('https://api.github.com/user').json())
-    image = image_url_from_github
-    nickname = login_from_github
-    print(jsonify(github.get('https://api.github.com/user').json()))
+    github_json = github.get('https://api.github.com/user').json()
+    print(github_json)
     '''
     image = '../static/images/profile.png'
+    '''
+    nickname = 'obeyurfate'
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     groups = ''
     description = ''
