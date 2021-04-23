@@ -21,7 +21,7 @@
       <li><a class="nav-link" href="http://127.0.0.1:5000/create_group">New groups</a></li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="Search_text" id="Search_text">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="Search_text" id="Search_text" onsubmit="return redirect()" onkeypress="keyPress(event)">
     </form>
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="search" onclick="redirect()">
         Search for a group</button>
@@ -30,6 +30,12 @@
 function redirect(){
 var joined = "http://127.0.0.1:5000/find_user?search=" + document.getElementById("Search_text").value;
 window.location.href = joined;
+};
+function keyPress(event){
+  if (event.keyCode == 13){
+  event.preventDefault();
+  redirect();
+  };
 };
 </script>
 </nav>
