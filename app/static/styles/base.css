@@ -1,12 +1,22 @@
 body {
     background-color: black;
    }
-nav{
+nav {
     color: #ffff;
     border-radius: 5px;
 }
-main{
+main {
     margin-top:15px;
     border-radius: 5px;
     color:#ffff
+}
+
+.main-title {
+	margin: 0 auto;
+	padding-bottom: 10px;
+}
+
+.main-description-block {
+	margin: 15px;
+	padding-top: 15px;
 }

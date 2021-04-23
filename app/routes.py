@@ -151,7 +151,8 @@ def ide():
             try:
                 with open('TEMP.py', 'w', encoding='utf-8') as temp_file:
                     temp_file.write(code)
-                temp_f = current_sess.query(Temps).filter(Temps.user_id == user.id).first()
+                temp_f = current_sess.query(Temps).filter(
+                    Temps.user_id == user.id).first()
                 temp_f.code = code
                 f = io.StringIO()
                 with redirect_stdout(f):
@@ -172,7 +173,8 @@ def ide():
                 return render_template('ide.html', **context)
         else:
             id = user.id
-            temp_f = current_sess.query(Temps).filter(Temps.user_id == id).first()
+            temp_f = current_sess.query(Temps).filter(
+                Temps.user_id == id).first()
             print(temp_f)
             if temp_f:
                 temp_f.code = code
@@ -186,7 +188,8 @@ def ide():
 
     elif request.method == 'GET':
         code = ''
-        temp_f = current_sess.query(Temps).filter(Temps.user_id == user.id).first()
+        temp_f = current_sess.query(Temps).filter(
+            Temps.user_id == user.id).first()
         if temp_f:
             code = temp_f.code
         return render_template('ide.html', code=code, result="")
