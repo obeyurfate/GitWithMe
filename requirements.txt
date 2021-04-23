@@ -3,3 +3,4 @@ flask
 requests_oauthlib
 gunicorn
 sqlalchemy
+sqlalchemy_serializer
