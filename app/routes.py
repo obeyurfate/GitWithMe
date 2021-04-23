@@ -108,11 +108,11 @@ def create_group():
     return render_template('create_group.html')
 
 
-@app.errorhandler(Exception)
+'''@app.errorhandler(Exception)
 def handle_exception(error):
     # Handle all exceptions
     return render_template('404.html', e=error), 404
-
+'''
 
 @app.route('/find_groups')
 def group_finder():
