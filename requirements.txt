@@ -2,3 +2,4 @@ python-dotenv
 flask
 requests_oauthlib
 gunicorn
+sqlalchemy
