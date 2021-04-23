@@ -3,33 +3,38 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-    <a class="navbar-brand" href="http://127.0.0.1:5000">GitWithMe</a>
+    <a class="navbar-brand" href="/">GitWithMe</a>
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
       <li class="nav-item">
-        <a class="nav-link" href="http://127.0.0.1:5000">Home<span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="http://127.0.0.1:5000/find_user">Find user</a>
+        <a class="nav-link" href="/find_user">Find user</a>
       </li>
         <li class="nav-item">
-        <a class="nav-link" href="http://127.0.0.1:5000/profile">My profile</a>
+        <a class="nav-link" href="/profile">My profile</a>
       </li>
         <li class="nav-item">
-        <a class="nav-link" href="http://127.0.0.1:5000/ide">IDE</a>
+        <a class="nav-link" href="/ide">IDE</a>
       </li>
-      <li><a class="nav-link" href="http://127.0.0.1:5000/find_groups">Find groups</a></li>
-      <li><a class="nav-link" href="http://127.0.0.1:5000/create_group">New groups</a></li>
+      <li><a class="nav-link" href="/find_groups">Find groups</a></li>
+      <li><a class="nav-link" href="/create_group">New groups</a></li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="Search_text" id="Search_text">
+    <form target="_blank" class="form-inline my-2 my-lg-0" onsubmit="redirect()">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="Search_text" id="Search_text" onsubmit="redirect()">
     </form>
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="search" onclick="redirect()">
         Search for a group</button>
   </div>
     <script>
-function redirect(){
-var joined = "http://127.0.0.1:5000/find_user?search=" + document.getElementById("Search_text").value;
-window.location.href = joined;
-};
-</script>
+      function pass() {
+        return false;
+      }
+
+      function redirect() {
+        var joined = "/find_groups?search=" + document.getElementById("Search_text").value;
+        document.location = joined;
+        return false;
+      };
+    </script>
 </nav>
