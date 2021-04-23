@@ -37,17 +37,14 @@ def profile(nickname=None):
     github = OAuth2Session(client_id, token=session['oauth_token'])
     github_json = github.get('https://api.github.com/user').json()
     print(github_json)
-    '''
-    image = '../static/images/profile.png'
-    '''
-    nickname = 'obeyurfate'
+    image = github_json['avatar_url']
+    nickname = github_json['login']
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     groups = ''
     description = ''
     if user:
         groups = user.groups
         description = user.description
-
     context = {'image': image,
                'groups': groups,
                'nickname': nickname,
