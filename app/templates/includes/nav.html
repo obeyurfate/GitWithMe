@@ -1,37 +1,51 @@
+<!-- Navigation bar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <!-- Toggler -->
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <!-- GitWithMe superscription -->
     <a class="navbar-brand" href="/">GitWithMe</a>
+    <!-- Elements -->
     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
       <li class="nav-item">
+        <!-- Home -->
         <a class="nav-link" href="/">Home<span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
+        <!-- Find user -->
         <a class="nav-link" href="/find_user">Find user</a>
       </li>
-        <li class="nav-item">
+      <li class="nav-item">
+        <!-- Profile -->
         <a class="nav-link" href="/profile">My profile</a>
       </li>
-        <li class="nav-item">
+      <li class="nav-item">
+        <!-- IDE -->
         <a class="nav-link" href="/ide">IDE</a>
       </li>
-      <li><a class="nav-link" href="/find_groups">Find groups</a></li>
-      <li><a class="nav-link" href="/create_group">New groups</a></li>
+      <li>
+        <!-- Find groups -->
+        <a class="nav-link" href="/find_groups">Find groups</a>
+      </li>
+      <li>
+        <!-- Make new group -->
+        <a class="nav-link" href="/create_group">New groups</a>
+      </li>
     </ul>
-
-      <input class="form-control mr-sm-2 inline search-widget" type="search" placeholder="Search" aria-label="Search" name="Search_text" id="Search_text" 
+      <!-- Search widget -->
+      <input class="form-control mr-sm-2 inline search-widget" type="search" placeholder="Search" aria-label="Search" name="search-text" id="search_text" 
       onkeydown = "if (event.keyCode == 13) redirect()" style='width: 17% !important'>
-
       <button class="btn btn-outline-success inline my-2 my-sm-0" type="submit" name="search" onclick="redirect()">
-        Search for a group</button> 
+        Search for a group
+      </button> 
 
   </div>
     <script>
       function redirect() {
         {
-        var joined = "/find_groups?search=" + document.getElementById("Search_text").value;
+        var joined = "/find_groups?search=" + document.getElementById("search-text").value;
         window.location = joined;
       };
         return false;

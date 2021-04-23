@@ -13,7 +13,9 @@ main {
 
 .main-title {
 	margin: 0 auto;
+	float: center !important;
 	padding-bottom: 10px;
+	width: 100%;
 }
 
 .main-description-block {
@@ -21,10 +23,21 @@ main {
 	padding-top: 15px;
 }
 
+.list-element {
+	background-color: transparent;
+	color: white;
+}
+
 .inline {
 	display: inline-block
 }
 
-.search-widget {
-	width: 17%;
+.left-column {
+	float: left;
+	width: 50%;
+}
+
+.right-column {
+	float: right;
+	width: 50%;
 }
