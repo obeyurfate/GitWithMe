@@ -3,6 +3,7 @@ from database.temps import Temps
 from database.users import User
 from database.groups import Groups
 from app import *
+from flask_login import login_required, login_user
 
 from contextlib import redirect_stdout
 from flask import redirect, render_template, send_file, request as flask_request, request
@@ -29,6 +30,7 @@ def login():
 
 @app.route('/profile')
 @app.route('/profile/<nickname>')
+@login_manager.unauthorized_handler
 def profile(nickname=None):
     current_sess = db_sess.create_session()
     if not nickname:
@@ -76,6 +78,16 @@ def group(name):
     return render_template('group.html', **context)
 
 
+@login_manager.user_loader
+def user_loader(id_):
+    current_sess = db_sess.create_session
+    if id_ not in current_sess.query(User).all():
+        return
+    user = User()
+    user.id = id_
+    return user
+
+
 @app.route('/favicon.ico')
 def favicon():
     # Returning favicon
@@ -95,6 +107,7 @@ def user_finder():
 
 
 @app.route('/create_group', methods=['POST', 'GET'])
+@login_required
 def create_group():
     if flask_request.method == 'POST':
         current_sess = db_sess.create_session()
@@ -115,6 +128,7 @@ def handle_exception(error):
     # Handle all exceptions
     return render_template('404.html', e=error), 404
 '''
+
 
 @app.route('/find_groups')
 def group_finder():
