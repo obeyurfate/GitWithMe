@@ -7,15 +7,22 @@ from app import *
 from contextlib import redirect_stdout
 from flask import redirect, render_template, send_file, request as flask_request, request
 from flask import url_for, session
-from flask_login import login_required
+from flask_login import login_required, login_user
 import io
 from requests_oauthlib import OAuth2Session
 import runpy
+from database import db_sess
 
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@login_manager.user_loader
+def flask_login(user_id):
+    db_sess = db_sess.create_session()
+    return db_sess.query(User).get(user_id)
 
 
 @app.route('/login')
@@ -30,25 +37,27 @@ def login():
 
 @app.route('/profile')
 @app.route('/profile/<nickname>')
-@login_manager.user_loader
+@login_manager.unauthorized_handler
 def profile(nickname=None):
     current_sess = db_sess.create_session()
     if not nickname:
         '''nickname = login_from_github'''
         nickname = 'obeyurfate'
-    '''
     github = OAuth2Session(client_id, token=session['oauth_token'])
-    return jsonify(github.get('https://api.github.com/user').json())
-    image = image_url_from_github
-    nickname = login_from_github
-    print(jsonify(github.get('https://api.github.com/user').json()))
-    '''
-    image = '../static/images/profile.png'
+    github_json = github.get('https://api.github.com/user').json()
+    print(github_json)
+    image = github_json['avatar_url']
+    nickname = github_json['login']
     user = current_sess.query(User).filter(User.nickname == nickname).first()
+    groups = ''
+    description = ''
+    if user:
+        groups = user.groups
+        description = user.description
     context = {'image': image,
-               'groups': user.groups,
+               'groups': groups,
                'nickname': nickname,
-               'description': user.description
+               'description': description
                }
     return render_template('profile.html', **context)
 
@@ -111,10 +120,12 @@ def create_group():
     return render_template('create_group.html')
 
 
+'''
 @app.errorhandler(Exception)
 def handle_exception(error):
     # Handle all exceptions
     return render_template('404.html', e=error), 404
+'''
 
 
 @app.route('/find_groups')
