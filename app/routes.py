@@ -43,10 +43,16 @@ def profile(nickname=None):
     '''
     image = '../static/images/profile.png'
     user = current_sess.query(User).filter(User.nickname == nickname).first()
+    groups = ''
+    description = ''
+    if user:
+        groups = user.groups
+        description = user.description
+
     context = {'image': image,
-               'groups': user.groups,
+               'groups': groups,
                'nickname': nickname,
-               'description': user.description
+               'description': description
                }
     return render_template('profile.html', **context)
 
