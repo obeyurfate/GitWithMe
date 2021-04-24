@@ -32,6 +32,7 @@ def login():
 def profile(nickname=None):
     current_sess = db_sess.create_session()
     if not nickname and not 'oauth_token' in session.keys():
+        session['redirect'] = '.profile'
         return redirect(url_for('.login'))
     elif not nickname and session['oauth_token']:
         github = OAuth2Session(client_id, token=session['oauth_token'])
@@ -141,13 +142,14 @@ def get_callback():
     token = github.fetch_token(token_url, client_secret=client_secret,
                                authorization_response=request.url)
     session['oauth_token'] = token
-    return redirect(url_for('.profile'))
+    return redirect(url_for(session['ide']))
 
 
 @app.route('/ide', methods=['GET', 'POST'])
 def ide():
     current_sess = db_sess.create_session()
     if not 'oauth_token' in session.keys():
+        session['redirect'] = '.ide'
         return redirect(url_for('.login'))
     else:
         github = OAuth2Session(client_id, token=session['oauth_token'])
