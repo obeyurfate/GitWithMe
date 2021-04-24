@@ -27,6 +27,14 @@ def login():
     return redirect(authorization_url)
 
 
+@app.route('/logout')
+def logout():
+    # Logout
+    session['oauth_state'] = None
+    return redirect('/')
+
+
+
 @app.route('/profile')
 @app.route('/profile/<nickname>')
 def profile(nickname=None):
@@ -142,7 +150,7 @@ def get_callback():
     token = github.fetch_token(token_url, client_secret=client_secret,
                                authorization_response=request.url)
     session['oauth_token'] = token
-    return redirect(url_for(session['redirect']))
+    return redirect(url_for(session.get('redirect', '.profile')))
 
 
 @app.route('/ide', methods=['GET', 'POST'])
