@@ -31,8 +31,9 @@ def login():
 @app.route('/profile/<nickname>')
 def profile(nickname=None):
     current_sess = db_sess.create_session()
-    print(nickname)
-    if not nickname:
+    if not nickname and not session['oauth_token']:
+        return redirect(url_for('.login'))
+    elif not nickname and session['oauth_token']:
         github = OAuth2Session(client_id, token=session['oauth_token'])
         github_json = github.get('https://api.github.com/user').json()
         print(github_json)
