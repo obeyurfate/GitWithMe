@@ -147,7 +147,12 @@ def get_callback():
 @app.route('/ide', methods=['GET', 'POST'])
 def ide():
     current_sess = db_sess.create_session()
-    nickname = 'obeyurfate'
+    if not nickname and not 'oauth_token' in session.keys():
+        return redirect(url_for('.login'))
+    elif not nickname and session['oauth_token']:
+        github = OAuth2Session(client_id, token=session['oauth_token'])
+        github_json = github.get('https://api.github.com/user').json()
+        nickname = github_json['login']
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if request.method == 'POST':
         code = '\n'.join(request.form['code'].split('<br/>'))
