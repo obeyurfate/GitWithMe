@@ -31,14 +31,15 @@ def login():
 @app.route('/profile/<nickname>')
 def profile(nickname=None):
     current_sess = db_sess.create_session()
+    print(nickname)
     if not nickname:
-        '''nickname = login_from_github'''
-        nickname = 'obeyurfate'
-    github = OAuth2Session(client_id, token=session['oauth_token'])
-    github_json = github.get('https://api.github.com/user').json()
-    print(github_json)
-    image = github_json['avatar_url']
-    nickname = github_json['login']
+        github = OAuth2Session(client_id, token=session['oauth_token'])
+        github_json = github.get('https://api.github.com/user').json()
+        print(github_json)
+        image = github_json['avatar_url']
+        nickname = github_json['login']
+    else:
+        image = 'static/images/profile.png'
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     groups = ''
     description = ''
