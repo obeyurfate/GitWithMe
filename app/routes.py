@@ -34,19 +34,21 @@ def profile(nickname=None):
     if not nickname:
         '''nickname = login_from_github'''
         nickname = 'obeyurfate'
-    '''
     github = OAuth2Session(client_id, token=session['oauth_token'])
-    return jsonify(github.get('https://api.github.com/user').json())
-    image = image_url_from_github
-    nickname = login_from_github
-    print(jsonify(github.get('https://api.github.com/user').json()))
-    '''
-    image = '../static/images/profile.png'
+    github_json = github.get('https://api.github.com/user').json()
+    print(github_json)
+    image = github_json['avatar_url']
+    nickname = github_json['login']
     user = current_sess.query(User).filter(User.nickname == nickname).first()
+    groups = ''
+    description = ''
+    if user:
+        groups = user.groups
+        description = user.description
     context = {'image': image,
-               'groups': user.groups,
+               'groups': groups,
                'nickname': nickname,
-               'description': user.description
+               'description': description
                }
     return render_template('profile.html', **context)
 
@@ -108,11 +110,11 @@ def create_group():
     return render_template('create_group.html')
 
 
-@app.errorhandler(Exception)
+'''@app.errorhandler(Exception)
 def handle_exception(error):
     # Handle all exceptions
     return render_template('404.html', e=error), 404
-
+'''
 
 @app.route('/find_groups')
 def group_finder():
@@ -133,6 +135,7 @@ def group_finder():
 @app.route('/callback')
 def get_callback():
     github = OAuth2Session(client_id, state=session['oauth_state'])
+    print(request.url)
     token = github.fetch_token(token_url, client_secret=client_secret,
                                authorization_response=request.url)
     session['oauth_token'] = token

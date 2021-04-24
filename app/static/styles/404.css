@@ -15,11 +15,10 @@ button.home-button {
     margin-right: auto;
 }
 
-a {
+.link {
 	text-decoration:none;
 }
 
-a:hover {
+.link:hover {
 	text-decoration:none;
 }
-

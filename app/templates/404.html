@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
+
+<!-- Style -->
 <link rel="stylesheet" type="text/css" href="../static/styles/404.css"/>
-<title>Error 404 | Page not found! </title>
+<!-- Title -->
+<script>document.title = "Error 404 | Page not found!"</script>
+
 <!-- 404 error image -->
 <div>
   <img src="../static/images/console_error.png" width="45%" height="55%" alt="error image" class="center">
@@ -19,4 +23,5 @@
     </button>
   </a>
 </div>
+
 {% endblock %}
