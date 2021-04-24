@@ -142,7 +142,7 @@ def get_callback():
     token = github.fetch_token(token_url, client_secret=client_secret,
                                authorization_response=request.url)
     session['oauth_token'] = token
-    return redirect(url_for(session['ide']))
+    return redirect(url_for(session['redirect']))
 
 
 @app.route('/ide', methods=['GET', 'POST'])
