@@ -147,9 +147,9 @@ def get_callback():
 @app.route('/ide', methods=['GET', 'POST'])
 def ide():
     current_sess = db_sess.create_session()
-    if not nickname and not 'oauth_token' in session.keys():
+    if not 'oauth_token' in session.keys():
         return redirect(url_for('.login'))
-    elif not nickname and session['oauth_token']:
+    else:
         github = OAuth2Session(client_id, token=session['oauth_token'])
         github_json = github.get('https://api.github.com/user').json()
         nickname = github_json['login']
