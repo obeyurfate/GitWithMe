@@ -39,7 +39,7 @@ def profile(nickname=None):
         image = github_json['avatar_url']
         nickname = github_json['login']
     else:
-        image = 'static/images/profile.png'
+        image = '../static/images/profile.png'
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     groups = ''
     description = ''
