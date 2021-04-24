@@ -31,7 +31,7 @@ def login():
 @app.route('/profile/<nickname>')
 def profile(nickname=None):
     current_sess = db_sess.create_session()
-    if not nickname and not 'oauth_token' in session.keys:
+    if not nickname and not 'oauth_token' in session.keys():
         return redirect(url_for('.login'))
     elif not nickname and session['oauth_token']:
         github = OAuth2Session(client_id, token=session['oauth_token'])
