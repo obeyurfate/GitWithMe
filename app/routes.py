@@ -30,7 +30,7 @@ def login():
 @app.route('/logout')
 def logout():
     # Logout
-    session['oauth_state'] = None
+    session['oauth_token'] = None
     return redirect('/')
 
 
