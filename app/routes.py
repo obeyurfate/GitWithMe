@@ -39,7 +39,7 @@ def profile(nickname=None):
         github = OAuth2Session(client_id, token=session['oauth_token'])
         github_json = github.get('https://api.github.com/user').json()
         nickname = github_json['login']
-    if session['oauth_token']:
+    if 'oauth_token' in session.keys():
         github = OAuth2Session(client_id, token=session['oauth_token'])
         github_json = github.get('https://api.github.com/user').json()
         if github_json['login'] != nickname:
