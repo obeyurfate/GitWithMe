@@ -18,4 +18,4 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
                           secondary="groups_to_users",
                           backref="user")
     github = sqlalchemy.Column(sqlalchemy.String)
-    icon = sqlalchemy.Column(sqlalchemy.String)
+    icon = sqlalchemy.Column(sqlalchemy.    String)

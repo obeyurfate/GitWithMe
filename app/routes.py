@@ -57,6 +57,7 @@ def profile(nickname=None):
         }
     return render_template('profile.html', **context)
 
+
 @app.route('/group/<name>')
 def group(name):
     current_sess = db_sess.create_session()
@@ -168,7 +169,12 @@ def get_callback():
         bio = github_json['bio'] if github_json['bio'] else 'Unknown'
         description = f"name: {name}\nbio: {bio}"
         github = github_json['url']
-        user = User(nickname=nickname, icon=image, description=description, github=github, token=token)
+        print(nickname, image, description, github, token)
+        user = User(nickname=nickname,
+                    icon=image,
+                    description=description,
+                    github=github,
+                    token=token)
         current_sess.add(user)
         current_sess.commit()
     return redirect(url_for(session.get('redirect', '.profile')))
