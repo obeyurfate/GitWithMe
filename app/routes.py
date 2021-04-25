@@ -171,8 +171,7 @@ def get_callback():
         user = User(nickname=nickname,
                     icon=image,
                     description=description,
-                    github=github,
-                    token=token)
+                    github=github)
         current_sess.add(user)
         current_sess.commit()
     return redirect(url_for(session.get('redirect', '.profile')))
