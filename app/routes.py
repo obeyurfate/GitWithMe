@@ -40,7 +40,10 @@ def profile(nickname=None):
         github_json = github.get('https://api.github.com/user').json()
         nickname = github_json['login']
     if session['oauth_token']:
-        add_to_group_btn = True
+        github = OAuth2Session(client_id, token=session['oauth_token'])
+        github_json = github.get('https://api.github.com/user').json()
+        if github_json['login'] != nickname:
+            add_to_group_btn = True
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if user:
         image = user.icon
