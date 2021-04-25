@@ -27,14 +27,6 @@ def login():
     return redirect(authorization_url)
 
 
-@app.route('/logout')
-def logout():
-    # Logout
-    session['oauth_token'] = None
-    return redirect('/')
-
-
-
 @app.route('/profile')
 @app.route('/profile/<nickname>')
 def profile(nickname=None):
@@ -45,24 +37,25 @@ def profile(nickname=None):
     elif not nickname and session['oauth_token']:
         github = OAuth2Session(client_id, token=session['oauth_token'])
         github_json = github.get('https://api.github.com/user').json()
-        print(github_json)
-        image = github_json['avatar_url']
         nickname = github_json['login']
-    else:
-        image = '../static/images/profile.png'
     user = current_sess.query(User).filter(User.nickname == nickname).first()
-    groups = ''
-    description = ''
     if user:
-        groups = user.groups
-        description = user.description
-    context = {'image': image,
-               'groups': groups,
-               'nickname': nickname,
-               'description': description
-               }
+        image = user.image
+        if not image:
+            image = '../static/images/profile.png'
+        context = {'image': image,
+                   'groups': user.groups,
+                   'nickname': nickname,
+                   'description': user.description
+                   }
+    else:
+        context = {
+            'nickname': 'Not found',
+            'image': '',
+            'groups': '',
+            'description': ''
+        }
     return render_template('profile.html', **context)
-
 
 @app.route('/group/<name>')
 def group(name):
@@ -127,6 +120,7 @@ def handle_exception(error):
     return render_template('404.html', e=error), 404
 '''
 
+
 @app.route('/find_groups')
 def group_finder():
     result = []
@@ -145,11 +139,27 @@ def group_finder():
 
 @app.route('/callback')
 def get_callback():
+    current_sess = db_sess.create_session()
     github = OAuth2Session(client_id, state=session['oauth_state'])
     print(request.url)
     token = github.fetch_token(token_url, client_secret=client_secret,
                                authorization_response=request.url)
     session['oauth_token'] = token
+    github = OAuth2Session(client_id, token=session['oauth_token'])
+    github_json = github.get('https://api.github.com/user').json()
+    nickname = github_json['login']
+    user = current_sess.query(User).filter(User.nickname == nickname).first()
+    if user:
+        return redirect(url_for(session.get('redirect', '.profile')))
+    else:
+        image = github_json['avatar_url']
+        name = github_json['name'] if github_json['name'] else 'Unknown'
+        bio = github_json['bio'] if github_json['bio'] else 'Unknown'
+        description = f"name: {name}\nbio: {bio}"
+        github = github_json['url']
+        user = User(name=nickname, icon=image, description=description, github=github, token=token)
+        current_sess.add(user)
+        current_sess.commit()
     return redirect(url_for(session.get('redirect', '.profile')))
 
 
