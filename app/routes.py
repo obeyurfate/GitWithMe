@@ -40,7 +40,7 @@ def profile(nickname=None):
         nickname = github_json['login']
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if user:
-        image = user.image
+        image = user.icon
         if not image:
             image = '../static/images/profile.png'
         context = {'image': image,
