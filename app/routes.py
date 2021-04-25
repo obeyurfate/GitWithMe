@@ -37,21 +37,24 @@ def profile(nickname=None):
     elif not nickname and session['oauth_token']:
         github = OAuth2Session(client_id, token=session['oauth_token'])
         github_json = github.get('https://api.github.com/user').json()
-        image = github_json['avatar_url']
         nickname = github_json['login']
-    else:
-        image = '../static/images/profile.png'
     user = current_sess.query(User).filter(User.nickname == nickname).first()
-    groups = ''
-    description = []
     if user:
-        groups = user.groups
-        description = user.description
-    context = {'image': image,
-               'groups': groups,
-               'nickname': nickname,
-               'description': description
-               }
+        image = user.icon
+        if not image:
+            image = '../static/images/profile.png'
+        context = {'image': image,
+                   'groups': user.groups,
+                   'nickname': nickname,
+                   'description': user.description
+                   }
+    else:
+        context = {
+            'nickname': 'Not found',
+            'image': '',
+            'groups': '',
+            'description': ''
+        }
     return render_template('profile.html', **context)
 
 
@@ -98,17 +101,28 @@ def user_finder():
 
 @app.route('/create_group', methods=['POST', 'GET'])
 def create_group():
-    if flask_request.method == 'POST':
+    if not 'oauth_token' in session.keys():
+        session['redirect'] = '.ide'
+        return redirect(url_for('.login'))
+    else:
         current_sess = db_sess.create_session()
-        name = flask_request.form['name']
-        icon = flask_request.form['icon']
-        description = flask_request.form['description']
-        group = Groups(name=name,
-                       description=description,
-                       icon=icon)
-        current_sess.add(group)
-        current_sess.commit()
-        return redirect('/group/' + name)
+        github = OAuth2Session(client_id, token=session['oauth_token'])
+        github_json = github.get('https://api.github.com/user').json()
+        nickname = github_json['login']
+        user = current_sess.query(User).filter(User.nickname == nickname).first()
+        if flask_request.method == 'POST':
+            current_sess = db_sess.create_session()
+            name = flask_request.form['name']
+            icon = flask_request.form['icon']
+            description = flask_request.form['description']
+            group = Groups(name=name,
+                           description=description,
+                           icon=icon)
+            group.user.append(user)
+            user.groups.append(group)
+            current_sess.add(group)
+            current_sess.commit()
+            return redirect('/group/' + name)
     return render_template('create_group.html')
 
 
@@ -117,6 +131,7 @@ def handle_exception(error):
     # Handle all exceptions
     return render_template('404.html', e=error), 404
 '''
+
 
 @app.route('/find_groups')
 def group_finder():
@@ -136,11 +151,29 @@ def group_finder():
 
 @app.route('/callback')
 def get_callback():
+    current_sess = db_sess.create_session()
     github = OAuth2Session(client_id, state=session['oauth_state'])
-    print(request.url)
     token = github.fetch_token(token_url, client_secret=client_secret,
                                authorization_response=request.url)
     session['oauth_token'] = token
+    github = OAuth2Session(client_id, token=session['oauth_token'])
+    github_json = github.get('https://api.github.com/user').json()
+    nickname = github_json['login']
+    user = current_sess.query(User).filter(User.nickname == nickname).first()
+    if user:
+        return redirect(url_for(session.get('redirect', '.profile')))
+    else:
+        image = github_json['avatar_url']
+        name = github_json['name'] if github_json['name'] else 'Unknown'
+        bio = github_json['bio'] if github_json['bio'] else 'Unknown'
+        description = f"name: {name}\nbio: {bio}"
+        github = github_json['url']
+        user = User(nickname=nickname,
+                    icon=image,
+                    description=description,
+                    github=github)
+        current_sess.add(user)
+        current_sess.commit()
     return redirect(url_for(session.get('redirect', '.profile')))
 
 
