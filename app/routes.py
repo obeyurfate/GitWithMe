@@ -100,17 +100,28 @@ def user_finder():
 
 @app.route('/create_group', methods=['POST', 'GET'])
 def create_group():
-    if flask_request.method == 'POST':
+    if not 'oauth_token' in session.keys():
+        session['redirect'] = '.ide'
+        return redirect(url_for('.login'))
+    else:
         current_sess = db_sess.create_session()
-        name = flask_request.form['name']
-        icon = flask_request.form['icon']
-        description = flask_request.form['description']
-        group = Groups(name=name,
-                       description=description,
-                       icon=icon)
-        current_sess.add(group)
-        current_sess.commit()
-        return redirect('/group/' + name)
+        github = OAuth2Session(client_id, token=session['oauth_token'])
+        github_json = github.get('https://api.github.com/user').json()
+        nickname = github_json['login']
+        user = current_sess.query(User).filter(User.nickname == nickname).first()
+        if flask_request.method == 'POST':
+            current_sess = db_sess.create_session()
+            name = flask_request.form['name']
+            icon = flask_request.form['icon']
+            description = flask_request.form['description']
+            group = Groups(name=name,
+                           description=description,
+                           icon=icon)
+            group.user.append(user)
+            user.groups.append(group)
+            current_sess.add(group)
+            current_sess.commit()
+            return redirect('/group/' + name)
     return render_template('create_group.html')
 
 

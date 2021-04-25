@@ -17,3 +17,5 @@ class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     groups = orm.relation("Groups",
                           secondary="groups_to_users",
                           backref="user")
+    github = sqlalchemy.Column(sqlalchemy.String)
+    icons = sqlalchemy.Column(sqlalchemy.String)
