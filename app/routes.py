@@ -31,6 +31,7 @@ def login():
 @app.route('/profile/<nickname>')
 def profile(nickname=None):
     current_sess = db_sess.create_session()
+    add_to_group_btn = False
     if not nickname and not 'oauth_token' in session.keys():
         session['redirect'] = '.profile'
         return redirect(url_for('.login'))
@@ -38,6 +39,8 @@ def profile(nickname=None):
         github = OAuth2Session(client_id, token=session['oauth_token'])
         github_json = github.get('https://api.github.com/user').json()
         nickname = github_json['login']
+    if session['oauth_token']:
+        add_to_group_btn = True
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if user:
         image = user.icon
@@ -46,14 +49,16 @@ def profile(nickname=None):
         context = {'image': image,
                    'groups': user.groups,
                    'nickname': nickname,
-                   'description': user.description
+                   'description': user.description,
+                   'add_btn': add_to_group_btn
                    }
     else:
         context = {
             'nickname': 'Not found',
             'image': '',
             'groups': '',
-            'description': ''
+            'description': '',
+            'add_btn': False
         }
     return render_template('profile.html', **context)
 
@@ -97,6 +102,27 @@ def user_finder():
         return render_template('user_finder.html', users=users, search_text=search_text)
     else:
         return render_template('user_finder.html', search_text=search_text)
+
+
+@app.route('/add_user/<nickname>', methods=['POST', 'GET'])
+def add_user(nickname):
+    current_sess = db_sess.create_session()
+    if request.method == 'GET':
+        github = OAuth2Session(client_id, token=session['oauth_token'])
+        github_json = github.get('https://api.github.com/user').json()
+        user_nickname = github_json['login']
+        user = current_sess.query(User).filter(User.nickname == user_nickname).first()
+        context = {
+            'groups': user.groups,
+            'nickname': nickname
+        }
+        return redirect('add_user.html', **context)
+    else:
+        user = current_sess.query(User).filter(User.nickname == nickname)
+        user.groups.append(request.form['groupSelect'])
+        group = current_sess.query(Groups).filter(Groups.name == request.form['groupSelect']).first()
+        group.user.append(user)
+        current_sess.commit()
 
 
 @app.route('/create_group', methods=['POST', 'GET'])

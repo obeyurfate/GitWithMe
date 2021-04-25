@@ -8,9 +8,12 @@
         <h3>{{nickname}}</h3>
     </div>
 </div>
+{% if add_btn %}
+<button onclick="/add_user/{{nickname}}">Add to a group</button>
+{% endif %}
 <div class="row">
     <div class="col col-md-auto">
-        <img src="{{image}}">
+        <img src="{{image}}" class="image">
     </div>
     <div class="col col-lg-2; description">
         <h4>Description</h4>
