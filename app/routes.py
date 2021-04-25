@@ -168,7 +168,7 @@ def get_callback():
         bio = github_json['bio'] if github_json['bio'] else 'Unknown'
         description = f"name: {name}\nbio: {bio}"
         github = github_json['url']
-        user = User(name=nickname, icon=image, description=description, github=github, token=token)
+        user = User(nickname=nickname, icon=image, description=description, github=github, token=token)
         current_sess.add(user)
         current_sess.commit()
     return redirect(url_for(session.get('redirect', '.profile')))
