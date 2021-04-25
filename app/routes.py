@@ -37,14 +37,13 @@ def profile(nickname=None):
     elif not nickname and session['oauth_token']:
         github = OAuth2Session(client_id, token=session['oauth_token'])
         github_json = github.get('https://api.github.com/user').json()
-        print(github_json)
         image = github_json['avatar_url']
         nickname = github_json['login']
     else:
         image = '../static/images/profile.png'
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     groups = ''
-    description = ''
+    description = []
     if user:
         groups = user.groups
         description = user.description
@@ -142,7 +141,7 @@ def get_callback():
     token = github.fetch_token(token_url, client_secret=client_secret,
                                authorization_response=request.url)
     session['oauth_token'] = token
-    return redirect(url_for(session['redirect']))
+    return redirect(url_for(session.get('redirect', '.profile')))
 
 
 @app.route('/ide', methods=['GET', 'POST'])

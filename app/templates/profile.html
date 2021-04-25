@@ -36,7 +36,9 @@
 	   	<b>{{ user.nickname }}</b>
 	    </td>
     {% endfor %}
+    {% if description %}
     <td>{{group.description[:30]}}</td>
+    {% endif %}
 </tr>
     {% endfor %}
 </table></div>
