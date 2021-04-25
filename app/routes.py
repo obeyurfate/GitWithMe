@@ -153,7 +153,6 @@ def group_finder():
 def get_callback():
     current_sess = db_sess.create_session()
     github = OAuth2Session(client_id, state=session['oauth_state'])
-    print(request.url)
     token = github.fetch_token(token_url, client_secret=client_secret,
                                authorization_response=request.url)
     session['oauth_token'] = token
@@ -169,7 +168,6 @@ def get_callback():
         bio = github_json['bio'] if github_json['bio'] else 'Unknown'
         description = f"name: {name}\nbio: {bio}"
         github = github_json['url']
-        print(nickname, image, description, github, token)
         user = User(nickname=nickname,
                     icon=image,
                     description=description,
