@@ -41,7 +41,7 @@ def profile(nickname=None):
         nickname = github_json['login']
     if 'oauth_token' in session.keys():
         github = OAuth2Session(client_id, token=session['oauth_token'])
-        github_json = github.get('https://api.github.com/user').json()
+        github_json = github.get('https://api.githu b.com/user').json()
         if github_json['login'] != nickname:
             add_to_group_btn = True
     user = current_sess.query(User).filter(User.nickname == nickname).first()

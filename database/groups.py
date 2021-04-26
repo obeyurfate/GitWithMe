@@ -21,4 +21,4 @@ class Groups(SqlAlchemyBase, SerializerMixin):
     name = sqlalchemy.Column(sqlalchemy.String)
     description = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     github = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    icon = sqlalchemy.Column(sqlalchemy.String)
+    icon = sqlalchemy.Column(sqlalchemy.String, nullable=True)

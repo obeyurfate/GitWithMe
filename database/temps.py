@@ -9,6 +9,6 @@ class Temps(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'temps'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
-    code = sqlalchemy.Column(sqlalchemy.String)
+    code = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     user_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
 
