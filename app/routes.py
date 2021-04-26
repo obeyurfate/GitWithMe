@@ -56,7 +56,7 @@ def profile(nickname=None):
         nickname = github_json['login']
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if user:
-        if user.nicknamem != nickname:
+        if user.nickname != nickname:
             add_btn = True
         image = user.icon
         if not image:
