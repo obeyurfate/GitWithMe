@@ -147,6 +147,9 @@ def create_group():
             name = flask_request.form['name']
             icon = flask_request.form['icon']
             description = flask_request.form['description']
+            group = current_sess.query(Groups).filter(Groups.name == name).first()
+            if group:
+                redirect('/create_group')
             group = Groups(name=name,
                            description=description,
                            icon=icon)
