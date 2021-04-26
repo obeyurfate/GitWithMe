@@ -160,7 +160,6 @@ def create_group():
 @app.errorhandler(Exception)
 def handle_exception(error):
     # Handle all exceptions
-    db.connections.close_all()
     print(error)
     return render_template('404.html', e=error), 404
 
