@@ -12,6 +12,21 @@ from requests_oauthlib import OAuth2Session
 import runpy
 
 
+@app.route('/add_user/<nickname>')
+def add_user(nickname):
+    current_sess = db_sess.create_session()
+    github = OAuth2Session(client_id, token=session['oauth_token'])
+    github_json = github.get('https://api.github.com/user').json()
+    user_nickname = github_json['login']
+    user = current_sess.query(User).filter(User.nickname == user_nickname).first()
+    context = {
+        'groups': user.groups,
+        'nickname': nickname
+    }
+    return render_template('add_user.html', **context)
+
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -31,6 +46,7 @@ def login():
 @app.route('/profile/<nickname>')
 def profile(nickname=None):
     current_sess = db_sess.create_session()
+    add_btn = False
     if not nickname and not 'oauth_token' in session.keys():
         session['redirect'] = '.profile'
         return redirect(url_for('.login'))
@@ -40,20 +56,24 @@ def profile(nickname=None):
         nickname = github_json['login']
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if user:
+        if user.nicknamem != nickname:
+            add_btn = True
         image = user.icon
         if not image:
             image = '../static/images/profile.png'
         context = {'image': image,
                    'groups': user.groups,
                    'nickname': nickname,
-                   'description': user.description
+                   'description': user.description,
+                   'add_btn': add_btn
                    }
     else:
         context = {
             'nickname': 'Not found',
             'image': '',
             'groups': '',
-            'description': ''
+            'description': '',
+            'add_btn': add_btn
         }
     return render_template('profile.html', **context)
 
