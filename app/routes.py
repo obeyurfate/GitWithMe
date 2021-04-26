@@ -128,11 +128,11 @@ def create_group():
     return render_template('create_group.html')
 
 
-'''@app.errorhandler(Exception)
+@app.errorhandler(Exception)
 def handle_exception(error):
     # Handle all exceptions
+    print(error)
     return render_template('404.html', e=error), 404
-'''
 
 
 @app.route('/find_groups')
@@ -163,6 +163,13 @@ def get_callback():
     nickname = github_json['login']
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if user:
+        user.image = github_json['avatar_url']
+        user.name = github_json['name'] if github_json['name'] else 'Unknown'
+        bio = github_json['bio'] if github_json['bio'] else 'Unknown'
+        user.description = f"name: {user.name}\nbio: {bio}"
+        user.github = github_json['url']
+        current_sess.merge(user)
+        current_sess.commit()
         return redirect(url_for(session.get('redirect', '.profile')))
     else:
         image = github_json['avatar_url']
