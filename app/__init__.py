@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from os import getenv, urandom, environ
+from os import urandom, environ
 
 from database import db_sess
 from dotenv import load_dotenv
