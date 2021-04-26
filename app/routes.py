@@ -111,10 +111,12 @@ def create_group():
         nickname = github_json['login']
         user = current_sess.query(User).filter(User.nickname == nickname).first()
         if flask_request.method == 'POST':
-            current_sess = db_sess.create_session()
             name = flask_request.form['name']
             icon = flask_request.form['icon']
             description = flask_request.form['description']
+            group = current_sess.query(Groups).filter(Groups.name == name)
+            if group:
+                return '/create_group'
             group = Groups(name=name,
                            description=description,
                            icon=icon)
@@ -197,6 +199,9 @@ def ide():
                     temp_file.write(code)
                 temp_f = current_sess.query(Temps).filter(
                     Temps.user_id == user.id).first()
+                if not temp_f:
+                    temp_f = Temps(code='',
+                                   user_id=user.id)
                 temp_f.code = code
                 f = io.StringIO()
                 with redirect_stdout(f):
