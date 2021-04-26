@@ -102,7 +102,7 @@ def user_finder():
 @app.route('/create_group', methods=['POST', 'GET'])
 def create_group():
     if not 'oauth_token' in session.keys():
-        session['redirect'] = '.ide'
+        session['redirect'] = '.create_group'
         return redirect(url_for('.login'))
     else:
         current_sess = db_sess.create_session()
@@ -116,7 +116,7 @@ def create_group():
             description = flask_request.form['description']
             group = current_sess.query(Groups).filter(Groups.name == name)
             if group:
-                return '/create_group'
+                return redirect('/create_group/get')
             group = Groups(name=name,
                            description=description,
                            icon=icon)
