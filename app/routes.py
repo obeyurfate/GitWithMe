@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from sqlalchemy.testing import db
+
 from database.temps import Temps
 from database.users import User
 from database.groups import Groups
@@ -155,11 +157,12 @@ def create_group():
     return render_template('create_group.html')
 
 
-'''@app.errorhandler(Exception)
+@app.errorhandler(Exception)
 def handle_exception(error):
     # Handle all exceptions
+    db.connections.close_all()
+    print(error)
     return render_template('404.html', e=error), 404
-'''
 
 
 @app.route('/find_groups')
