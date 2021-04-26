@@ -177,6 +177,7 @@ def group_finder():
         'search_text': search_text,
         'result': result
     }
+    current_sess.commit()
     return render_template('group_finder.html', **context)
 
 
@@ -238,6 +239,7 @@ def ide():
                     'code': code,
                     'result': result
                 }
+                current_sess.commit()
                 return render_template('ide.html', **context)
             except Exception as e:
                 result = e
@@ -245,6 +247,7 @@ def ide():
                     'code': code,
                     'result': result
                 }
+                current_sess.commit()
                 return render_template('ide.html', **context)
         else:
             id = user.id
