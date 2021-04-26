@@ -133,7 +133,7 @@ def add_user(nickname):
 @app.route('/create_group', methods=['POST', 'GET'])
 def create_group():
     if not 'oauth_token' in session.keys():
-        session['redirect'] = '.ide'
+        session['redirect'] = '.create_group'
         return redirect(url_for('.login'))
     else:
         current_sess = db_sess.create_session()
