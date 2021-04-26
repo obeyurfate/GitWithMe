@@ -128,6 +128,7 @@ def add_user(nickname):
         group = current_sess.query(Groups).filter(Groups.name == request.form['groupSelect']).first()
         group.user.append(user)
         current_sess.commit()
+        current_sess.close()
 
 
 @app.route('/create_group', methods=['POST', 'GET'])
@@ -153,6 +154,7 @@ def create_group():
             user.groups.append(group)
             current_sess.add(group)
             current_sess.commit()
+            current_sess.close()
             return redirect('/group/' + name)
     return render_template('create_group.html')
 
@@ -162,7 +164,7 @@ def handle_exception(error):
     # Handle all exceptions
     print(error)
     current_sess = db_sess.create_session()
-    current_sess.close()
+    current_sess.close_all()
     return render_template('404.html', e=error), 404
 
 
@@ -180,6 +182,7 @@ def group_finder():
         'result': result
     }
     current_sess.commit()
+    current_sess.close()
     return render_template('group_finder.html', **context)
 
 
@@ -208,6 +211,7 @@ def get_callback():
                     github=github)
         current_sess.add(user)
         current_sess.commit()
+        current_sess.close()
     return redirect(url_for(session.get('redirect', '.profile')))
 
 
@@ -249,7 +253,6 @@ def ide():
                     'code': code,
                     'result': result
                 }
-                current_sess.commit()
                 return render_template('ide.html', **context)
         else:
             id = user.id
@@ -264,6 +267,7 @@ def ide():
                 temp_f = Temps(code=code, user_id=id)
                 current_sess.add(temp_f)
                 current_sess.commit()
+                current_sess.close()
             return render_template('ide.html', code=code)
 
     elif request.method == 'GET':
