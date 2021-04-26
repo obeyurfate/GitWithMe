@@ -159,7 +159,8 @@ def create_group():
             current_sess.commit()
             current_sess.close()
             return redirect('/group/' + name)
-    return render_template('create_group.html')
+        else:
+            return render_template('create_group.html')
 
 
 @app.errorhandler(Exception)
