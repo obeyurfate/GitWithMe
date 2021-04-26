@@ -12,8 +12,32 @@ from requests_oauthlib import OAuth2Session
 import runpy
 
 
+def get_nickname():
+    '''
+    Get nickname if user is logged in else redirect to sign in page.
+
+    return -> nickname.
+    '''
+    if not 'oauth_token' in session.keys():
+        session['redirect'] = '.ide'
+        return redirect(url_for('.login'))
+    else:
+        github = OAuth2Session(client_id, token=session['oauth_token'])
+        github_json = github.get('https://api.github.com/user').json()
+        nickname = github_json['login']
+    return nickname
+
+
 @app.route('/add_user/<nickname>')
 def add_user(nickname):
+    '''
+    Add user to a group.
+
+    params:
+        nickname: str().
+
+    return -> None.
+    '''
     current_sess = db_sess.create_session()
     github = OAuth2Session(client_id, token=session['oauth_token'])
     github_json = github.get('https://api.github.com/user').json()
@@ -26,9 +50,9 @@ def add_user(nickname):
     return render_template('add_user.html', **context)
 
 
-
 @app.route('/')
 def index():
+    '''Main page.'''
     return render_template('index.html')
 
 
@@ -45,21 +69,26 @@ def login():
 @app.route('/profile')
 @app.route('/profile/<nickname>')
 def profile(nickname=None):
+    '''
+    Profile page.
+
+    params
+        nickname: str().
+
+    return -> None.
+    '''
     current_sess = db_sess.create_session()
     add_btn = False
-    if not nickname and not 'oauth_token' in session.keys():
-        session['redirect'] = '.profile'
-        return redirect(url_for('.login'))
-    elif not nickname and session['oauth_token']:
-        github = OAuth2Session(client_id, token=session['oauth_token'])
-        github_json = github.get('https://api.github.com/user').json()
-        nickname = github_json['login']
+    if not nickname:
+        nickname = get_nickname()
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if user:
         if user.nickname != nickname:
+            # Добавление кнопки "Добавить в группу"
             add_btn = True
         image = user.icon
         if not image:
+            # Картинка по умолчанию
             image = '../static/images/profile.png'
         context = {'image': image,
                    'groups': user.groups,
@@ -80,6 +109,14 @@ def profile(nickname=None):
 
 @app.route('/group/<name>')
 def group(name):
+    '''
+    Group page.
+
+    params:
+        name: str().
+
+    return -> None.
+    '''
     current_sess = db_sess.create_session()
     group = current_sess.query(Groups).filter(name == Groups.name).first()
     result = {
@@ -109,6 +146,7 @@ def favicon():
 
 @app.route('/find_user')
 def user_finder():
+    '''User search page.'''
     current_sess = db_sess.create_session()
     search_text = flask_request.args.get("search", default='')
     if search_text != '':
@@ -121,30 +159,25 @@ def user_finder():
 
 @app.route('/create_group', methods=['POST', 'GET'])
 def create_group():
-    if not 'oauth_token' in session.keys():
-        session['redirect'] = '.create_group'
-        return redirect(url_for('.login'))
-    else:
-        current_sess = db_sess.create_session()
-        github = OAuth2Session(client_id, token=session['oauth_token'])
-        github_json = github.get('https://api.github.com/user').json()
-        nickname = github_json['login']
-        user = current_sess.query(User).filter(User.nickname == nickname).first()
-        if flask_request.method == 'POST':
-            name = flask_request.form['name']
-            icon = flask_request.form['icon']
-            description = flask_request.form['description']
-            group = current_sess.query(Groups).filter(Groups.name == name).first()
-            if group:
-                return redirect('/create_group')
-            group = Groups(name=name,
-                           description=description,
-                           icon=icon)
-            group.user.append(user)
-            user.groups.append(group)
-            current_sess.add(group)
-            current_sess.commit()
-            return redirect('/group/' + name)
+    '''Create group page.'''
+    current_sess = db_sess.create_session()
+    nickname = get_nickname()
+    user = current_sess.query(User).filter(User.nickname == nickname).first()
+    if flask_request.method == 'POST':
+        name = flask_request.form['name']
+        icon = flask_request.form['icon']
+        description = flask_request.form['description']
+        group = current_sess.query(Groups).filter(Groups.name == name).first()
+        if group:
+            return redirect('/create_group')
+        group = Groups(name=name,
+                       description=description,
+                       icon=icon)
+        group.user.append(user)
+        user.groups.append(group)
+        current_sess.add(group)
+        current_sess.commit()
+        return redirect('/group/' + name)
     return render_template('create_group.html')
 
 
@@ -157,6 +190,7 @@ def handle_exception(error):
 
 @app.route('/find_groups')
 def group_finder():
+    '''Group search page.'''
     result = []
     current_sess = db_sess.create_session()
     search_text = flask_request.args.get('search', default='')
@@ -173,6 +207,7 @@ def group_finder():
 
 @app.route('/callback')
 def get_callback():
+    '''Callback from github.api.'''
     current_sess = db_sess.create_session()
     github = OAuth2Session(client_id, state=session['oauth_state'])
     token = github.fetch_token(token_url, client_secret=client_secret,
@@ -208,14 +243,9 @@ def get_callback():
 
 @app.route('/ide', methods=['GET', 'POST'])
 def ide():
+    '''IDE page.'''
     current_sess = db_sess.create_session()
-    if not 'oauth_token' in session.keys():
-        session['redirect'] = '.ide'
-        return redirect(url_for('.login'))
-    else:
-        github = OAuth2Session(client_id, token=session['oauth_token'])
-        github_json = github.get('https://api.github.com/user').json()
-        nickname = github_json['login']
+    nickname = get_nickname()
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if request.method == 'POST':
         code = '\n'.join(request.form['code'].split('<br/>'))
@@ -231,7 +261,9 @@ def ide():
                                    user_id=user.id)
                 temp_f.code = code
                 f = io.StringIO()
+                # Перенаправление всего вывода в консоль IDE
                 with redirect_stdout(f):
+                    # запуск временного файла
                     runpy.run_path('TEMP.py')
                 s = f.getvalue()
                 result = s
@@ -251,7 +283,6 @@ def ide():
             id = user.id
             temp_f = current_sess.query(Temps).filter(
                 Temps.user_id == id).first()
-            print(temp_f)
             if temp_f:
                 temp_f.code = code
                 current_sess.merge(temp_f)
