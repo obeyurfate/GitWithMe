@@ -166,8 +166,6 @@ def create_group():
 def handle_exception(error):
     # Handle all exceptions
     print(error)
-    current_sess = db_sess.create_session()
-    current_sess.close_all()
     return render_template('404.html', e=error), 404
 
 
@@ -184,8 +182,6 @@ def group_finder():
         'search_text': search_text,
         'result': result
     }
-    current_sess.commit()
-    current_sess.close()
     return render_template('group_finder.html', **context)
 
 
@@ -249,6 +245,7 @@ def ide():
                     'result': result
                 }
                 current_sess.commit()
+                current_sess.close()
                 return render_template('ide.html', **context)
             except Exception as e:
                 result = e
@@ -264,8 +261,8 @@ def ide():
             print(temp_f)
             if temp_f:
                 temp_f.code = code
-                current_sess.merge(temp_f)
                 current_sess.commit()
+                current_sess.close()
             else:
                 temp_f = Temps(code=code, user_id=id)
                 current_sess.add(temp_f)
