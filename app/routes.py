@@ -12,22 +12,6 @@ from requests_oauthlib import OAuth2Session
 import runpy
 
 
-def get_nickname():
-    '''
-    Get nickname if user is logged in else redirect to sign in page.
-
-    return -> nickname.
-    '''
-    if not 'oauth_token' in session.keys():
-        session['redirect'] = '.ide'
-        return redirect(url_for('.login'))
-    else:
-        github = OAuth2Session(client_id, token=session['oauth_token'])
-        github_json = github.get('https://api.github.com/user').json()
-        nickname = github_json['login']
-    return nickname
-
-
 @app.route('/add_user/<nickname>')
 def add_user(nickname):
     '''
@@ -80,7 +64,13 @@ def profile(nickname=None):
     current_sess = db_sess.create_session()
     add_btn = False
     if not nickname:
-        nickname = get_nickname()
+        if not 'oauth_token' in session.keys():
+            session['redirect'] = '.ide'
+            return redirect(url_for('.login'))
+        else:
+            github = OAuth2Session(client_id, token=session['oauth_token'])
+            github_json = github.get('https://api.github.com/user').json()
+            nickname = github_json['login']
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if user:
         if user.nickname != nickname:
@@ -160,8 +150,14 @@ def user_finder():
 @app.route('/create_group', methods=['POST', 'GET'])
 def create_group():
     '''Create group page.'''
+    if not 'oauth_token' in session.keys():
+        session['redirect'] = '.ide'
+        return redirect(url_for('.login'))
+    else:
+        github = OAuth2Session(client_id, token=session['oauth_token'])
+        github_json = github.get('https://api.github.com/user').json()
+        nickname = github_json['login']
     current_sess = db_sess.create_session()
-    nickname = get_nickname()
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if flask_request.method == 'POST':
         name = flask_request.form['name']
@@ -244,8 +240,14 @@ def get_callback():
 @app.route('/ide', methods=['GET', 'POST'])
 def ide():
     '''IDE page.'''
+    if not 'oauth_token' in session.keys():
+        session['redirect'] = '.ide'
+        return redirect(url_for('.login'))
+    else:
+        github = OAuth2Session(client_id, token=session['oauth_token'])
+        github_json = github.get('https://api.github.com/user').json()
+        nickname = github_json['login']
     current_sess = db_sess.create_session()
-    nickname = get_nickname()
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if request.method == 'POST':
         code = '\n'.join(request.form['code'].split('<br/>'))
