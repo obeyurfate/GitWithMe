@@ -4,9 +4,12 @@ a {
 a:hover {
 	text-decoration:none;
 }
-li {
+ul {
     list-style-type: none;
 }
-.list{
-    width: 400px;
+td {
+    border: solid 1px;
+}
+tr {
+    border: solid 1px;
 }

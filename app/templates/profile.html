@@ -39,8 +39,8 @@
             {% for group in groups %}
             <tr>
                 <td><a href="/group/{{group.name}}">{{group.name}}</a></td>
-                <td style="200px;">
-                    <ul>{% for user in group.user %}
+                <td>
+                    <ul style="200px;">{% for user in group.user %}
                         <!-- Link to user -->
                         <li><a href="{{ '/profile/' + user.nickname}}">
                             <!-- User icon -->
@@ -56,6 +56,8 @@
                 </td>
                 {% if group.desciption %}
                 <td>{{group.description[:30]}}</td>
+                {% else %}
+                <td>Unknown</td>
                 {% endif %}
             </tr>
             {% endfor %}
