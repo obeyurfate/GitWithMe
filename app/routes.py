@@ -307,7 +307,7 @@ def ide():
 def delete_group():
     current_sess = db_sess.create_session()
     if request.method == 'POST':
-        group = current_sess.query(Groups).filter(Groups.name == request.form.name).filter()
+        group = current_sess.query(Groups).filter(Groups.name == request.form['name']).filter()
         if group:
             current_sess.delete(group)
         return redirect('/find_groups')
