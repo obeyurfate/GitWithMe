@@ -73,8 +73,9 @@ def profile(nickname=None):
         else:
             nickname = session['nickname']
             add_btn = False
-    if session['nickname'] == nickname:
-        add_btn = False
+    if 'nickname' in session:
+        if session['nickname'] == nickname:
+            add_btn = False
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if user:
         image = user.icon
