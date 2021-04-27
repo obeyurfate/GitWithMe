@@ -199,7 +199,7 @@ def group_finder():
     current_sess = db_sess.create_session()
     search_text = flask_request.args.get('search', default='')
     if search_text != '':
-        result = current_sess.query(Groups).filter(search_text.lower() == Groups.name).first()
+        result = current_sess.query(Groups).all()
         result = [[group.name, group.description] for group in result
                   if search_text in group.name]
     context = {
