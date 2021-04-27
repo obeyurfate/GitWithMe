@@ -61,6 +61,8 @@ def profile(nickname=None):
 
     return -> None.
     '''
+    github = OAuth2Session(client_id, token=session['oauth_token'])
+    github_json = github.get('https://api.github.com/user').json()
     current_sess = db_sess.create_session()
     add_btn = False
     if not nickname:
@@ -68,12 +70,10 @@ def profile(nickname=None):
             session['redirect'] = '.profile'
             return redirect(url_for('.login'))
         else:
-            github = OAuth2Session(client_id, token=session['oauth_token'])
-            github_json = github.get('https://api.github.com/user').json()
             nickname = github_json['login']
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if user:
-        if user.nickname != nickname:
+        if not 'oauth_token' in session.keys() or nickname != github_json['login']:
             # Добавление кнопки "Добавить в группу"
             add_btn = True
         image = user.icon
