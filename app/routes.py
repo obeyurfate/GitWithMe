@@ -304,7 +304,7 @@ def ide():
 
 
 @app.route('/delete_group', methods=['GET, POST'])
-def delete_group(name):
+def delete_group():
     current_sess = db_sess.create_session()
     if request.method == 'POST':
         group = current_sess.query(Groups).filter(Groups.name == request.form.name).filter()
