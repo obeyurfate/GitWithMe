@@ -65,7 +65,7 @@ def profile(nickname=None):
     add_btn = False
     if not nickname:
         if not 'oauth_token' in session.keys():
-            session['redirect'] = '.ide'
+            session['redirect'] = '.profile'
             return redirect(url_for('.login'))
         else:
             github = OAuth2Session(client_id, token=session['oauth_token'])
@@ -152,7 +152,7 @@ def user_finder():
 def create_group():
     '''Create group page.'''
     if not 'oauth_token' in session.keys():
-        session['redirect'] = '.ide'
+        session['redirect'] = '.create_group'
         return redirect(url_for('.login'))
     else:
         github = OAuth2Session(client_id, token=session['oauth_token'])
