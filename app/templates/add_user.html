@@ -5,7 +5,7 @@
     <label for="classSelect">Выберите группу</label>
     <select class="form-control" id="groupSelect" name="groupSelect">
         {% group for group in groups %}
-        <option>option.name</option>
+        <option>group.name</option>
         {% endfor %}
     </select>
     <button type="submit">Add</button>
