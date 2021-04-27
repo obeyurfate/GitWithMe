@@ -314,6 +314,7 @@ def ide():
 def delete_group():
     current_sess = db_sess.create_session()
     if request.method == 'POST':
+        print('Privet')
         group = current_sess.query(Groups).filter(Groups.name == request.form['groupSelect']).first()
         if group:
             current_sess.delete(group)
