@@ -313,6 +313,7 @@ def ide():
 
 @app.route('/delete_group', methods=['GET', 'POST'])
 def delete_group():
+    '''Deleting group.'''
     current_sess = db_sess.create_session()
     if request.method == 'POST':
         print('Privet')
@@ -337,6 +338,7 @@ def delete_group():
 
 @app.route('/clear_all')
 def clear_all():
+    '''Deleting temp file's code.'''
     if not session['nickname']:
         return redirect('/ide')
     else:
