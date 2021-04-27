@@ -314,9 +314,8 @@ def clear_all():
     else:
         current_sess = db_sess.create_session()
         user = current_sess.query(User).filter(User.nickname == session['nickname']).first()
-        temp_f = current_sess.query(Temps).filter(Temps.user_id == user.id)
+        temp_f = current_sess.query(Temps).filter(Temps.user_id == user.id).first()
         if temp_f:
             current_sess.delete(temp_f)
             current_sess.commit()
-        else:
-            redirect('/ide')
+        redirect('/ide')
