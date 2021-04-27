@@ -23,9 +23,11 @@ def add_user(nickname):
     return -> None.
     '''
     current_sess = db_sess.create_session()
-    github = OAuth2Session(client_id, token=session['oauth_token'])
-    github_json = github.get('https://api.github.com/user').json()
-    user_nickname = github_json['login']
+    if not 'oauth_token' in session.keys():
+        session['redirect'] = '.create_group'
+        return redirect(url_for('.login'))
+    else:
+        user_nickname = session['nickname']
     user = current_sess.query(User).filter(User.nickname == user_nickname).first()
     context = {
         'groups': user.groups,
@@ -69,9 +71,7 @@ def profile(nickname=None):
             session['redirect'] = '.profile'
             return redirect(url_for('.login'))
         else:
-            github = OAuth2Session(client_id, token=session['oauth_token'])
-            github_json = github.get('https://api.github.com/user').json()
-            nickname = github_json['login']
+            nickname = session['nickname']
             add_btn = False
     if session['nickname'] == nickname:
         add_btn = False
@@ -156,9 +156,7 @@ def create_group():
         session['redirect'] = '.create_group'
         return redirect(url_for('.login'))
     else:
-        github = OAuth2Session(client_id, token=session['oauth_token'])
-        github_json = github.get('https://api.github.com/user').json()
-        nickname = github_json['login']
+        nickname = session['nickname']
     current_sess = db_sess.create_session()
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if flask_request.method == 'POST':
@@ -247,9 +245,7 @@ def ide():
         session['redirect'] = '.ide'
         return redirect(url_for('.login'))
     else:
-        github = OAuth2Session(client_id, token=session['oauth_token'])
-        github_json = github.get('https://api.github.com/user').json()
-        nickname = github_json['login']
+        nickname = session['nickname']
     current_sess = db_sess.create_session()
     user = current_sess.query(User).filter(User.nickname == nickname).first()
     if request.method == 'POST':
@@ -305,6 +301,28 @@ def ide():
         if temp_f:
             code = temp_f.code
         return render_template('ide.html', code=code, result="")
+
+
+@app.route('/delete_group', methods='GET, POST')
+def delete_group(name):
+    current_sess = db_sess.create_session()
+    if request.method == 'POST':
+        group = current_sess.query(Groups).filter(Groups.name == request.form.name).filter()
+        if group:
+            current_sess.delete(group)
+        return redirect('/find_groups')
+    else:
+        if not 'oauth_token' in session.keys():
+            session['redirect'] = '.create_group'
+            return redirect(url_for('.login'))
+        else:
+            nickname = session['nickname']
+        user = current_sess.query(User).filter(User.nickname == nickname).first()
+        groups = user.groups
+        if groups:
+            return render_template('delete_group.html', groups=groups)
+        else:
+            return redirect('/profile')
 
 
 @app.route('/clear_all')
