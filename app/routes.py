@@ -12,7 +12,7 @@ from requests_oauthlib import OAuth2Session
 import runpy
 
 
-@app.route('/add_user/<nickname>')
+@app.route('/add_user/<nickname>', methods=['GET', 'POST'])
 def add_user(nickname):
     '''
     Add user to a group.
@@ -23,17 +23,23 @@ def add_user(nickname):
     return -> None.
     '''
     current_sess = db_sess.create_session()
-    if not 'oauth_token' in session.keys():
-        session['redirect'] = '.create_group'
-        return redirect(url_for('.login'))
+    if request.method == 'GET':
+        if not 'oauth_token' in session.keys():
+            session['redirect'] = '.create_group'
+            return redirect(url_for('.login'))
+        else:
+            user_nickname = session['nickname']
+        user = current_sess.query(User).filter(User.nickname == user_nickname).first()
+        context = {
+            'groups': user.groups,
+            'nickname': nickname
+        }
+        return render_template('add_user.html', **context)
     else:
-        user_nickname = session['nickname']
-    user = current_sess.query(User).filter(User.nickname == user_nickname).first()
-    context = {
-        'groups': user.groups,
-        'nickname': nickname
-    }
-    return render_template('add_user.html', **context)
+        user = current_sess.query(User).filter(User.nickname == nickname).first()
+        group = current_sess.query(Groups).filter(Groups.name == request.form['groupSelect']).first()
+        user.append(group)
+        return redirect('/profile')
 
 
 @app.route('/')
@@ -308,7 +314,7 @@ def ide():
 def delete_group():
     current_sess = db_sess.create_session()
     if request.method == 'POST':
-        group = current_sess.query(Groups).filter(Groups.name == request.form['name']).filter()
+        group = current_sess.query(Groups).filter(Groups.name == request.form['groupSelect']).filter()
         if group:
             current_sess.delete(group)
         return redirect('/find_groups')
