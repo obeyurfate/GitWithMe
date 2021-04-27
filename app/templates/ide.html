@@ -23,7 +23,7 @@
 </form>
 <button onclick="submit()" class="btn btn-success">Run</button>
 <button onclick="save()" class="btn btn-info">Save</button>
-<button onclick="if (confirm('Delete all code?'))     window.location.href = '/clear_all'"
+<button onclick="if (confirm('Delete all code?'))  window.onbeforeunload = null; window.location.href = '/clear_all'"
         class="btn btn-warning">Clear all</button>
     <div><textarea readonly>output> {{result}}</textarea></div>
 

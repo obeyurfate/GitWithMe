@@ -310,7 +310,7 @@ def ide():
 @app.route('/clear_all')
 def clear_all():
     if not session['nickname']:
-        redirect('/ide')
+        return redirect('/ide')
     else:
         current_sess = db_sess.create_session()
         user = current_sess.query(User).filter(User.nickname == session['nickname']).first()
@@ -318,4 +318,4 @@ def clear_all():
         if temp_f:
             current_sess.delete(temp_f)
             current_sess.commit()
-        redirect('/ide')
+        return redirect('/ide')
