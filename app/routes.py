@@ -316,6 +316,6 @@ def clear_all():
         user = current_sess.query(User).filter(User.nickname == session['nickname']).first()
         temp_f = current_sess.query(Temps).filter(Temps.user_id == user.id).first()
         if temp_f:
-            current_sess.delete(temp_f)
+            temp_f.code = ''
             current_sess.commit()
         return redirect('/ide')
