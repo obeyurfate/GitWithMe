@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <p>Добавить {{nickname}} в группу</p>
-<form>
+<form method="post">
     <label for="classSelect">Выберите группу</label>
     <select class="form-control" id="groupSelect" name="groupSelect">
         {% for group in groups %}
