@@ -23,7 +23,8 @@
 </form>
 <button onclick="submit()" class="btn btn-success">Run</button>
 <button onclick="save()" class="btn btn-info">Save</button>
-<button onclick="clear()" class="btn btn-warning">Clear all</button>
+<button onclick="if (confirm('Delete all code?'))     window.location.href = '/clear_all'"
+        class="btn btn-warning">Clear all</button>
     <div><textarea readonly>output> {{result}}</textarea></div>
 
 <script>
@@ -47,12 +48,6 @@ let form = document.forms.codeform;
         form.elements.code.value += editor.session.getLine(i) + "<br/>";
 };
     form.submit();
-};
-function clear(){
-    alert('a?');
-    if (confirm("Delete all code?")) {
-    window.location.href = "/clear_all";
-};
 };
 function save() {
     window.onbeforeunload = null;
