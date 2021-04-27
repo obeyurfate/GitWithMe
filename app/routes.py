@@ -318,6 +318,7 @@ def delete_group():
         group = current_sess.query(Groups).filter(Groups.name == request.form['groupSelect']).first()
         if group:
             current_sess.delete(group)
+            current_sess.commit()
         return redirect('/find_groups')
     else:
         if not 'oauth_token' in session.keys():
