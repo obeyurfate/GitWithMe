@@ -1,6 +1,6 @@
 body {
     background-color: black;
-   }
+}
 
 a {
 	text-decoration:none;
@@ -36,6 +36,7 @@ p {
 	margin: 0 auto;
 	width: 90%;
 }
+
 .list-group-item{
     background-color: #1f2326;
     border-radius: 5px;

@@ -11,9 +11,12 @@ GitWithMe is a web application with a clear interface. We believe that developme
  - Online IDE with a synchronization with your colleagues in real time
 
 ## Screenshots
-![error page](https://i.imgur.com/m1vQIhx.png)
-![find page](https://i.imgur.com/yt78v8H.png)
-![group page](https://i.imgur.com/sO27geq.png)
-![create group page](https://i.imgur.com/q3OhE2r.png)
+![Main page](https://i.imgur.com/3YZGiS8.png)
+![IDE](https://i.imgur.com/8SjM64m.png)
+![Profile](https://i.imgur.com/LMTHUly.png)
+![Create group](https://i.imgur.com/4qMyiSE.png)
+![Group finder](https://i.imgur.com/VjTp2em.png)
+![Group](https://i.imgur.com/HKiDwnF.png)
+![Delete group](https://i.imgur.com/qHaL73I.png)
 ## License
 This is free and unencumbered software released into the public domain. For more information see LICENSE file.

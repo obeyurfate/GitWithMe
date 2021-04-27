@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <h3>Удалить группу</h3>
+<!-- Group deleter -->
 <form method="post">
     <label for="classSelect">Выберите группу</label>
     <select class="form-control" id="groupSelect" name="groupSelect">
@@ -10,4 +12,5 @@
     </select>
     <button type="submit">Delete</button>
 </form>
+
 {% endblock %}
