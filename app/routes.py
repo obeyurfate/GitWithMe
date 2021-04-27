@@ -303,7 +303,7 @@ def ide():
         return render_template('ide.html', code=code, result="")
 
 
-@app.route('/delete_group', methods='GET, POST')
+@app.route('/delete_group', methods=['GET, POST'])
 def delete_group(name):
     current_sess = db_sess.create_session()
     if request.method == 'POST':
