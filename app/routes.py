@@ -38,7 +38,7 @@ def add_user(nickname):
     else:
         user = current_sess.query(User).filter(User.nickname == nickname).first()
         group = current_sess.query(Groups).filter(Groups.name == request.form['groupSelect']).first()
-        user.append(group)
+        user.groups.append(group)
         return redirect('/profile')
 
 
