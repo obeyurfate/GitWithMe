@@ -9,9 +9,6 @@
     </div>
 </div>
 <div class="row">
-    {% if add_btn %}
-    <button onclick="window.location.href = '/add_user'">Add to a group</button>
-    {% endif %}
     <div class="col col-md-auto image">
         <img src="{{image}}">
     </div>
@@ -19,6 +16,9 @@
         <h4>Description</h4>
         {% if desciption %}
         {{description[:30]}}
+        {% endif %}
+        {% if add_btn %}
+        <button onclick="window.location.href = '/add_user{{nicname}}'">Add to a group</button>
         {% endif %}
     </div>
 </div>
