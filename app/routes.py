@@ -87,6 +87,7 @@ def profile(nickname=None):
                    'add_btn': add_btn
                    }
     else:
+        add_btn = True
         context = {
             'nickname': 'Not found',
             'image': '',
