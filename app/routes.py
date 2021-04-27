@@ -313,7 +313,7 @@ def clear_all():
         redirect('/ide')
     else:
         current_sess = db_sess.create_session()
-        user = current_sess.query(User).filter(User.nickname == session['nickname'])
+        user = current_sess.query(User).filter(User.nickname == session['nickname']).first()
         temp_f = current_sess.query(Temps).filter(Temps.user_id == user.id)
         if temp_f:
             current_sess.delete(temp_f)
