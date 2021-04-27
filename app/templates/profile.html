@@ -9,16 +9,18 @@
     </div>
 </div>
 <div class="row">
-    <div class="col col-md-auto image">
+    {% if add_btn %}
+    <div class="col col-md-auto">
+        <button onclick="window.location.href = '/add_user{{nicname}}'">Add to a group</button>
+    </div>
+    {% endif %}
+    <div class="col col-md-2">
         <img src="{{image}}">
     </div>
     <div class="col col-lg-2; description">
         <h4>Description</h4>
         {% if desciption %}
         {{description[:30]}}
-        {% endif %}
-        {% if add_btn %}
-        <button onclick="window.location.href = '/add_user{{nicname}}'">Add to a group</button>
         {% endif %}
     </div>
 </div>
