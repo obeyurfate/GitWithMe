@@ -5,5 +5,11 @@ a:hover {
 	text-decoration:none;
 }
 td {
-width: 120px;
+    width: 120px;
+}
+li {
+    list-style-type: none;
+}
+.list{
+    width: 200px;
 }
